@@ -1,6 +1,6 @@
 {
   "desired_count": 10,
-  "query": "covid",
+  "query": "backpacking desk",
   "batch_limit": 30,
   "pause_delay": 100,
   "output_file": "output.txt",
@@ -40,6 +40,8 @@
     "tableau.com",
     "openstreetmap.org",
     "hearstapps.com",
-    "highcharts.com"
+    "highcharts.com",
+    "paypal.com",
+    "paypalobjects.com
   ]
 }

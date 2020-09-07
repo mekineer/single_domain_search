@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-'
+import json
+import logging
+import os
+import time
 import urllib
 from pathlib import Path
+
 import tldextract
-from selenium import webdriver
-import time
 from googlesearch import search
-import json
-import os
-import logging
+from selenium import webdriver, common
+from db_controller import DBController
 
 logger = logging.getLogger("cdn")
 logger.setLevel(logging.DEBUG)
@@ -18,11 +20,11 @@ logging.basicConfig(
     format="[%(asctime)s][%(levelname)s]: %(message)s"
 )
 
+dbc = DBController()
+
 
 class Stats:
     processed = 0
-    found_urls = set()
-    visited_urls = set()
 
 
 stats = Stats()
@@ -66,7 +68,7 @@ def get_src_urls(driver):
     return srcs
 
 
-def get_extracted_urls(url):
+def process_url(url):
     # chrome
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--ignore-certificate-errors")
@@ -75,22 +77,31 @@ def get_extracted_urls(url):
     chrome_options.add_argument("--enable-javascript")
     driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
                               options=chrome_options)
-    print(url)
-    logger.debug(f"processing url: {url}")
-    driver.get(url)
-    time.sleep(config_data.page_delay)
-    script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
-    net_stat = driver.execute_script(script_to_exec)
 
-    if config_data.save_htmls:
-        Path("htmls").mkdir(parents=True, exist_ok=True)
-        url_html_file = urllib.parse.quote(url, safe='')
-        with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
-            f.write(driver.page_source)
+    extracted_urls = []
 
-    extracted_urls = list(set(find_urls(net_stat)))
-    extracted_urls += get_src_urls(driver)
-    logger.debug(f"extracted urls: {extracted_urls}")
+    try:
+        print(url)
+        logger.debug(f"processing url: {url}")
+        driver.get(url)
+        time.sleep(config_data.page_delay)
+        script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
+        net_stat = driver.execute_script(script_to_exec)
+
+        if config_data.save_htmls:
+            Path("htmls").mkdir(parents=True, exist_ok=True)
+            url_html_file = urllib.parse.quote(url, safe='')
+            with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
+                f.write(driver.page_source)
+
+        extracted_urls = find_urls(net_stat)
+        extracted_urls += get_src_urls(driver)
+        extracted_urls = list(set(extracted_urls))
+        logger.debug(f"extracted urls: {extracted_urls}")
+    except common.exceptions.WebDriverException as e:
+        logger.exception(f"ERROR {e}")
+        print(f"failed to process: {url}: e: {e}")
+
     driver.quit()
     return extracted_urls
 
@@ -118,6 +129,8 @@ if __name__ == '__main__':
     tld = optional_config.get('tld', '') or 'com'
     safe = optional_config.get('safe', '') or 'off'
     lang = optional_config.get('lang', '') or 'en'
+
+    found_current_batch = 0
     try:
         while True:
             stop_num = start_num + limit_urls
@@ -142,7 +155,8 @@ if __name__ == '__main__':
 
             new_urls = []
             for i in search_urls:
-                if i not in stats.visited_urls:
+                safe_url = urllib.parse.quote(i, safe='')
+                if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
             print(f"new urls recieved from google: {len(new_urls)}")
@@ -153,24 +167,26 @@ if __name__ == '__main__':
 
             start_num += limit_urls
             for url in new_urls:
-                if url not in stats.visited_urls:
-                    stats.processed += 1
-                    logger.debug(f"total urls processed: {stats.processed}")
-                    stats.visited_urls.add(url)
+                stats.processed += 1
+                logger.debug(f"total urls processed: {stats.processed}")
+                safe_url = urllib.parse.quote(url, safe='')
 
-                    ext_urls = get_extracted_urls(url)
-                    if found_success(url, ext_urls):
-                        stats.found_urls.add(url)
-                        logger.debug(f"FOUND DESIRED URL: {url}")
+                ext_urls = process_url(url)
+                dbc.add_visited_url(safe_url)
 
-                        with open(output_path, 'a') as of:
-                            of.write(f"{url}\n")
-                            of.flush()
+                if ext_urls and found_success(url, ext_urls):
+                    found_current_batch += 1
+                    dbc.mark_url(safe_url, 1)
+                    logger.debug(f"FOUND DESIRED URL: {url}")
 
-                        print(f"***************** FOUND URLS: {stats.found_urls}")
-                        if len(stats.found_urls) == desired_count:
-                            print(f"Found desired count of urls: {desired_count}")
-                            exit(0)
+                    with open(output_path, 'a') as of:
+                        of.write(f"{url}\n")
+                        of.flush()
+
+                    print(f"***************** FOUND URL: {url}")
+                    if found_current_batch == desired_count:
+                        print(f"Found desired count of urls: {desired_count}")
+                        exit(0)
     except Exception as e:
         logger.exception(e)
         print(f"[ERROR] Something went wrong. Please check scdn.log. . . {e} Exiting")
