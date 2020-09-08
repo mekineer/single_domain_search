@@ -7,7 +7,9 @@ The user script will filter Google search results, to only web pages that use on
 I will be using uBlock Origin on medium mode, to see if a website uses another domain for its content, or scripts, or anything.  For example, Facebook would fail, because it draws from the domain fbcdn.net.  https://mekineer.com/information-technology/2020-ublock-origin-extension
 </project>
 
-The current status of the development, is that the results returned are too often false positives.  As far as I understand, the false positives are because of 404 and redirection.  Sometimes the resulting site draws from multiple domains.
+The current status of the development, is that the results returned are too often false positives.  As far as I understand, the false positives are because of 404 and redirection.  Sometimes a site listed in results draws from multiple domains.
+
+I don't get sufficient results from Google in order to further test the script.  When I redo a search with the same keywords, I think it starts from the very beginning, retrieving same results, rather than asking Google to start at the Nth result.
 
 ## PRE-REQ
 Please download following before running the script.
