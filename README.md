@@ -1,3 +1,14 @@
+I'm hoping someone will take over this project, and further develop it.  I'm not a programmer, and the current work was done by Gohar Fatima through Upwork.  It started as a fixed price contract, but she kept wanting more milestone payments, and this was over my budget.  She does good work, but it's more than I intended on funding.  The project description posted on Upwork is the following:
+
+<project>
+Browse a non-corporate web, for websites where all content is delivered by a single domain.
+The user script will filter Google search results, to only web pages that use only one domain for their content.  This would take recursive bot-based browsing of all search results, until the desired number of results are listed.
+
+I will be using uBlock Origin on medium mode, to see if a website uses another domain for its content, or scripts, or anything.  For example, Facebook would fail, because it draws from the domain fbcdn.net.  https://mekineer.com/information-technology/2020-ublock-origin-extension
+</project>
+
+The current status of the development, is that the results returned are too often false positives.  As far as I understand, the false positives are because of 404 and redirection.  Sometimes the resulting site draws from multiple domains.
+
 ## PRE-REQ
 Please download following before running the script.
 1. Python3.8
