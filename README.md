@@ -11,6 +11,17 @@ The current status of the development, is that the results returned are too ofte
 
 I don't get sufficient results from Google in order to further test the script.  When I redo a search with the same keywords, I think it starts from the very beginning, retrieving same results, rather than asking Google to start at the Nth result.
 
+## Future Possibilities
+I would like to start building a search database, by providing a portal for users to search a search engine, like Google.
+
+Is it possible for a visitor to the portal site, to present to Google their own IP address, instead of the portal site's IP address?
+
+Is it also possible, for the portal to access the search result, so that it can use the results to build a search database?
+
+The user's IP address, or any of the user's information, would not be kept. The database would be used to filter results in ways that Google's search syntax is not capable of filtering. These filtered results would be served to the user, alongside Google's results.
+
+Aside from listing sites that draw only from a single domain, sans whitelist, the possibilities could be much greater.  Blacklists in use by ad-blockers could be used.  Results returned depending on country could be compared side by side, as well as showing differences returned depending on the web browser used.
+
 ## PRE-REQ
 Please download following before running the script.
 1. Python3.8
