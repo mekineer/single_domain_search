@@ -1,3 +1,8 @@
+Websites increasingly draw resources from multiple domains.  One example is that of advertising.  Adblockers work because there are domains, or servers, who's sole purpose is to deliver advertising.  Because of the presence of monopolies, a list of domains or servers delivering advertising can be maintained, and their content blocked.  There are other examples where multiple domains are used, and they mostly have to do with the increasing complexity and marketization of the web.  Most importantly, money creates a conflict of interest that reduces the value of the content that the web produces.  See https://lifehacks.science/research-covering-conflicts-of-interest.
+
+So where can you search to find a non-marketed web?  You can find it in simplicity: those sites using only a single domain for their resources.  On occasion, these sites may draw resources from other domains, but only to add valuable content, such as an inline youtube video: these resource domains are allowed in a whitelist.  Another reason, for example, is that the site may have a "donate" button from paypal.  The whitelist can be edited, enabled or disabled by the user.
+
+## Please Develop This Project
 I'm hoping someone will take over this project, and further develop it.  I'm not a programmer, and the current work was done by Gohar Fatima through Upwork.  It started as a fixed price contract, but she kept wanting more milestone payments, and this was over my budget.  She does good work, but it's more than I intended on funding.  The project description posted on Upwork is the following:
 
 ## Original Project Description
@@ -20,7 +25,7 @@ Is it also possible, for the portal to access the search result, so that it can 
 
 The user's IP address, or any of the user's information, would not be kept. The database would be used to filter results in ways that Google's search syntax is not capable of filtering. These filtered results would be served to the user, alongside Google's results.
 
-Aside from listing sites that draw only from a single domain, sans whitelist, the possibilities could be much greater.  Blacklists in use by ad-blockers could be used.  Results returned depending on country could be compared side by side, as well as showing differences returned depending on the web browser used.
+Aside from listing sites that draw only from a single domain, sans whitelist, the possibilities could be much greater.  Blacklists in use by ad-blockers could be used.  It could also be useful for showing the ways that Google returns different results depending on the country you are in, the web browser you are using, your logged in status, etc.
 
 ## PRE-REQ
 Please download following before running the script.
