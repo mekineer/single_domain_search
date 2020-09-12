@@ -14,7 +14,7 @@ I will be using uBlock Origin on medium mode, to see if a website uses another d
 ## Current Status
 The current status of the development, is that the results returned are too often false positives.  As far as I understand, the false positives are because of 404 and redirection.  Sometimes a site listed in results draws from multiple domains.  There are also fake sites, who's sole purpose is to boost the SEO of a commercialized website.
 
-I don't get sufficient results from Google in order to further test the script.  This is because Google "throttles" the rate of results delivered using this method.  When I redo a search with the same keywords, it starts from the very beginning, retrieving the same results, rather than asking Google to start at the Nth result.  Also, the script doesn't inform me of N, the number of Google search results it has processed for the given keyword search.
+I don't get sufficient results from Google in order to further test the script.  This is because Google "throttles" the rate of results delivered using this method.  I am forced to wait an hour or so, and restart the script.  When restarting the script with the same keywords, it starts from the very beginning, retrieving the same results, rather than asking Google to start at the Nth result.  Also, the script doesn't inform me of N, the number of Google search results it has processed for the given keyword search.
 
 Instead of using Headless Chrome to request search results from Google, another option would be https://developers.google.com/custom-search/v1/overview (thank you Dino Bartolome).  This would at least get us through the test-of-concept.
 
