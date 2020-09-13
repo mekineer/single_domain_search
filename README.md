@@ -19,7 +19,7 @@ I don't get sufficient results from Google in order to further test the script. 
 Instead of using Headless Chrome to request search results from Google, another option would be https://developers.google.com/custom-search/v1/overview (thank you Dino Bartolome).  This would at least get us through the test-of-concept.
 
 ## Future Possibilities
-I would like to start building a search database, by providing a portal for users to search a search engine, like Google.
+Currently the project is a python script to test the concept.  Later the project would be a web app.  The web app could be used to build a search database, by providing a portal for users to search a search engine, like Google.
 
 Is it possible for a visitor to the portal site, to present to Google their own IP address, instead of the portal site's IP address?
 
