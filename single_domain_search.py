@@ -6,7 +6,7 @@ import os
 import time
 import urllib
 from pathlib import Path
-
+from sys import exit
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
@@ -75,7 +75,7 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
-    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+    driver = webdriver.Chrome(executable_path="D:\Abubakar\single_domain_search-master\single_domain_search-master\chromedriver_win32\chromedriver.exe",
                               options=chrome_options)
 
     extracted_urls = []
