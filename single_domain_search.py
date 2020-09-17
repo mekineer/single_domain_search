@@ -6,11 +6,13 @@ import os
 import time
 import urllib
 from pathlib import Path
+from sys import exit
 
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
+from datetime import datetime
 import requests
 
 logger = logging.getLogger("cdn")
@@ -82,9 +84,16 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
-    home_path,file_name_ = os.path.split(os.path.realpath(__file__))
-    chromedriver = os.path.join(home_path,'chromedriver')
-    driver = webdriver.Chrome(chromedriver,chrome_options=chrome_options)
+    # Abubakar: For Mac os just change the below line as it was before.
+    # Marcos: Can the same relative path be used in both mac and windows?  Then no need to alter a hard-coded path.
+    # Marcos: Or, if chromedriver executable is different for mac and win, then change path dynamically by os library requesting the os version:
+    # "util/os_version_variable/chromedriver"
+    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+                              options=chrome_options)
+    # home_path,file_name_ = os.path.split(os.path.realpath(__file__))
+    # chromedriver = os.path.join(home_path,'chromedriver')
+    # driver = webdriver.Chrome(chromedriver,chrome_options=chrome_options)
+
     extracted_urls = []
 
     try:
@@ -110,7 +119,8 @@ def process_url(url):
 
     driver.quit()
     return extracted_urls
-
+def check_staleness(last_date):
+    return (datetime.now() -  last_date).days
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
@@ -135,8 +145,14 @@ if __name__ == '__main__':
     tld = optional_config.get('tld', '') or 'com'
     safe = optional_config.get('safe', '') or 'off'
     lang = optional_config.get('lang', '') or 'en'
-
+    dbc.add_query_info(query)
+    #print( "date:",check_staleness(dbc.get_query_date(query)))
+    if(check_staleness(dbc.get_query_date(query))==0):
+        start_num = dbc.get_processed_count(query)
+    else:
+        start_num = 0
     found_current_batch = 0
+    print("Current start_num:",start_num)
     try:
         while True:
             stop_num = start_num + limit_urls
@@ -180,7 +196,8 @@ if __name__ == '__main__':
 
                 ext_urls = process_url(url)
                 dbc.add_visited_url(safe_url)
-
+                dbc.update_query_count(query,stats.processed)
+                print("processed Urls count:",stats.processed)
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
