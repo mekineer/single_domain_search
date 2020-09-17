@@ -1,2 +1,4 @@
 https://docs.python.org/3/tutorial/
 https://www.lfd.uci.edu/~gohlke/pythonlibs/
+https://codingbat.com/python
+https://www.hackerrank.com/domains/python

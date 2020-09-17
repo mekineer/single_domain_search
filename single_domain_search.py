@@ -138,6 +138,7 @@ if __name__ == '__main__':
     else:
         start_num = 0
     found_current_batch = 0
+    stats.processed = start_num
     print("Current start_num:",start_num)
     try:
         while True:
