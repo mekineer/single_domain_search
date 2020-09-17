@@ -6,12 +6,12 @@ import os
 import time
 import urllib
 from pathlib import Path
-from sys import exit
+from sys import exit 
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
-
+from datetime import datetime
 logger = logging.getLogger("cdn")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(
@@ -75,6 +75,7 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
+    # For Mac os just change the below line as it was before.
     driver = webdriver.Chrome(executable_path="D:\Abubakar\single_domain_search-master\single_domain_search-master\chromedriver_win32\chromedriver.exe",
                               options=chrome_options)
 
@@ -104,7 +105,8 @@ def process_url(url):
 
     driver.quit()
     return extracted_urls
-
+def check_staleness(last_date):
+    return (datetime.now() -  last_date).days
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
@@ -129,8 +131,14 @@ if __name__ == '__main__':
     tld = optional_config.get('tld', '') or 'com'
     safe = optional_config.get('safe', '') or 'off'
     lang = optional_config.get('lang', '') or 'en'
-
+    dbc.add_query_info(query)
+    #print( "date:",check_staleness(dbc.get_query_date(query)))
+    if(check_staleness(dbc.get_query_date(query))==0):
+        start_num = dbc.get_processed_count(query)
+    else:
+        start_num = 0
     found_current_batch = 0
+    print("Current start_num:",start_num)
     try:
         while True:
             stop_num = start_num + limit_urls
@@ -173,7 +181,8 @@ if __name__ == '__main__':
 
                 ext_urls = process_url(url)
                 dbc.add_visited_url(safe_url)
-
+                dbc.update_query_count(query,stats.processed)
+                print("processed Urls count:",stats.processed)
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)

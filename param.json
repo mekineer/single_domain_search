@@ -1,6 +1,6 @@
 {
   "desired_count": 1,
-  "query": "backpacking desk",
+  "query": "python",
   "batch_limit": 10,
   "pause_delay": 100,
   "output_file": "output.txt",
