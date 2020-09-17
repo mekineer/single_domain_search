@@ -1,0 +1,1225 @@
+<html class="csstransforms csstransforms3d csstransitions"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+
+    <style>
+    @font-face {
+	font-family: 'hnet-icomoon';
+	src:url('http://www.backpackershousevenice.it/Content/themes/star/fonts/icomoon.eot?');
+	src:url('http://www.backpackershousevenice.it/Content/themes/star/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('http://www.backpackershousevenice.it/Content/themes/star/fonts/icomoon.woff?') format('woff'),
+		url('http://www.backpackershousevenice.it/Content/themes/star/fonts/icomoon.ttf?') format('truetype'),
+		url('http://www.backpackershousevenice.it/Content/themes/star/fonts/icomoon.svg?#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+    </style>
+
+
+    
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/Content/themes/star/css/animate.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/hn-icon.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/bootstrap.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/owl.carousel.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/owl.theme.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/prettyPhoto.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/smoothness/jquery-ui-1.10.4.custom.min.css">
+    <link rel="stylesheet" href="/Content/themes/star/rs-plugin/css/settings.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/theme.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/colors/turquoise.css">
+    <link rel="stylesheet" href="/Content/themes/star/css/responsive.css">
+    <link rel="stylesheet" href="/Content/themes/bellevue/assets/css/gallery.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600,700">
+
+    
+
+    <!-- Javascripts -->
+    <script type="text/javascript" async="" src="https://www.googleadservices.com/pagead/conversion_async.js"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=AW-767049278"></script><script type="text/javascript" async="" defer="" src="https://optimus.360and1.com/optimus-H12oVaOz7.js"></script><script async="" src="//www.google-analytics.com/analytics.js"></script><script type="text/javascript" src="/Content/themes/star/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/bootstrap-hover-dropdown.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/owl.carousel.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.parallax-1.1.3.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.nicescroll.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.prettyPhoto.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.forms.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.sticky.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/waypoints.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.isotope.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/jquery.gmap.min.js"></script>
+    
+    <script type="text/javascript" src="/Content/themes/star/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/custom.js"></script>
+    <script type="text/javascript" src="/Content/themes/star/js/validator.js"></script>
+    <script type="text/javascript" src="/Content/themes/shared/jquery.dotdotdot.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+   
+
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+            function PopupCenter(url, title, w, h) {
+                // Fixes dual-screen position                         Most browsers      Firefox
+                var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+                var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+                var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+                var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+                var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+                var top = ((height / 2) - (h / 2)) + dualScreenTop;
+                var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+                // Puts focus on the newWindow
+                if (window.focus) {
+                    newWindow.focus();
+                }
+            }
+
+
+            // ellipsis
+
+            $('.truncateText').dotdotdot();
+            $('.truncateTextMore').dotdotdot({
+                callback: function (isTruncated, orgContent) {
+                    if (isTruncated) {
+                        $('.showMoreText').show();
+                    }
+
+                }
+            });
+
+            
+
+
+
+        });
+
+
+
+    </script>
+
+
+        <script type="text/javascript">
+
+                 $(document).ready(function () {
+
+                     function PopupCenter(url, title, w, h) {
+                         // Fixes dual-screen position                         Most browsers      Firefox
+                         var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+                         var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+                         var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+                         var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+                         var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+                         var top = ((height / 2) - (h / 2)) + dualScreenTop;
+                         var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+                         // Puts focus on the newWindow
+                         if (window.focus) {
+                             newWindow.focus();
+                         }
+                     }
+
+                     $('.goToBol').click(function () {
+                         var url = "https://crs.hotelnet.biz/crs.web2/wbe/preselection.aspx?hotel=8578&lingua=GB";
+
+                         //PopupCenter(url, '', '1100', '700')
+                         //document.href = url;
+                         window.location = url;
+
+             });
+
+         });
+
+        </script>
+
+    
+
+
+
+
+<style>
+        /* CSS variables */
+        :root {
+            /* Palette */
+            --mainWebsiteColor:             #f96d64;
+            --mainWebsiteColorText:         #ffffff;
+            --logo-area-background:         #ffffff;
+        }
+</style>
+
+
+
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-42130990-1', 'auto');
+        ga('send', 'pageview');
+        ga('set', 'anonymizeIP', true);
+
+
+         var hotelHasGA = 'False';
+
+        if (hotelHasGA.toLowerCase() == 'true') {
+
+        ga('create', '', 'auto', 'clientTracker1', { 'allowLinker': true });
+        ga('clientTracker1.require', 'linker');
+            ga('clientTracker1.linker:autoLink', ['netbooking.gpdati.com', 'booking.hotelnet.biz', 'www.quickbooking.eu', 'smartbooking.hotelnet.biz', 'smartbooking.fastreplymail.it']);
+        ga('clientTracker1.set', 'anonymizeIP', true);
+        ga('clientTracker1.send', 'pageview');
+    }
+
+
+
+    </script>
+
+    <title>Backpackers House Venice - Official Website</title>
+
+
+
+
+
+
+<script src="https://googleads.g.doubleclick.net/pagead/viewthroughconversion/767049278/?random=1600081662984&amp;cv=9&amp;fst=1600081662984&amp;num=1&amp;bg=ffffff&amp;guid=ON&amp;resp=GooglemKTybQhCsO&amp;u_h=600&amp;u_w=800&amp;u_ah=600&amp;u_aw=800&amp;u_cd=24&amp;u_his=2&amp;u_tz=330&amp;u_java=false&amp;u_nplug=0&amp;u_nmime=0&amp;gtm=2oa920&amp;sendb=1&amp;ig=1&amp;data=event%3Dgtag.config&amp;frm=0&amp;url=http%3A%2F%2Fwww.backpackershousevenice.it%2Fen&amp;tiba=Backpackers%20House%20Venice%20-%20Official%20Website&amp;hn=www.googleadservices.com&amp;async=1&amp;rfmt=3&amp;fmt=4"></script></head>
+<body style=""><div id="cookie-bar" class="fixed bottom" style="z-index:9999;"><p>We use cookies to track usage and preferences.<a href="" class="cb-enable">I Understand</a><span class="cb-policy">More info</span></p></div>
+      
+
+               
+    <!-- Top header -->
+    <div id="top-header">
+         
+        <div class="container upperBarContainer">
+            <div class="row">
+                <div class="col-xs-6" style="padding-right:0px;width: 54%;
+    margin-left: 2px;">
+                    <div class="th-text pull-left">
+                        <div class="th-item"><a href="tel:+39 329 472 4966"><i class="fa fa-phone"></i>+39 329 472 4966</a> </div>
+                        <div class="th-item"><a href="mailto:housevenice1@gmail.com;jalamctg8@gmail.com"><i class="fa fa-envelope"></i>housevenice1@gmail.com;jalamctg8@gmail.com </a></div>
+                        <div class="th-item"><a href="http://www.backpackershousevenice.it/en/Contact"><i class="fa fa-address-card-o"></i>Contacts </a></div>
+                    </div>
+                </div>
+                <div class="col-xs-6 langAndSocialsPool" style="width:45%;">
+                    <div class="th-text pull-right">
+                        <div class="th-item languagePool">
+                            <div class="btn-group">
+                                <button class="btn btn-default btn-xs dropdown-toggle js-activated" type="button" data-toggle="dropdown">English <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+
+                                        <li><a href="/en">English</a> </li>                        
+                                        <li><a href="/it">Italiano</a> </li>                        
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="th-item socialsPool">
+                            <div class="social-icons">
+                                    <a target="_blank" href="https://www.facebook.com/backpackersvenice"><i class="fa fa-facebook"></i></a>
+
+                         
+                                
+                                  <span style="margin-right:10px;display:none">|</span>
+
+                                    
+                                
+                            </div>
+            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <!-- Navigation -->
+        <div id="sticky-sticky-wrapper" class="sticky-wrapper" style="height: 84px;"><div class="navbar yamm navbar-default" id="sticky">
+
+            <div class="container headerLinkContainer">
+                <div class="navbar-header">
+                    <button type="button" data-toggle="collapse" data-target="#navbar-collapse-grid" class="navbar-toggle"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a href="http://www.backpackershousevenice.it/en/index" class="navbar-brand">
+                        <!-- Logo -->
+                            <div id="logo" class="imgResponsive" style="height: 78px;
+    width: 210px;    margin-top: 3px; 
+    background-size: contain; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_250,c_scale,f_auto,q_auto:low/v1594988543/Hotels/8578/HotelLogo/a3sp9wkp8xnpt5qhzkd3')">
+                                
+                                
+                            </div>
+                    </a>
+                </div>
+                <div id="navbar-collapse-grid" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav main-navbar">
+                        <li class="dropdown"><a href="http://www.backpackershousevenice.it/en/index" "=""><i class="fa fa-home" aria-hidden="true"></i>&nbsp; Home</a>
+                        </li>
+                        <li><a href="http://www.backpackershousevenice.it/en/Rooms"><i class="fa fa-bed" aria-hidden="true"></i>&nbsp; Rooms</a></li>
+                                                                                <li><a href="http://www.backpackershousevenice.it/en/position"><i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; Access</a></li>
+
+
+                            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle js-activated"><i class="fa fa-bars" aria-hidden="true"></i>&nbsp; More<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="http://www.backpackershousevenice.it/en/gallery">Gallery</a></li>
+
+
+
+                    
+
+                                </ul>
+                            </li>
+
+                    </ul>
+                    <ul class="nav navbar-nav importantMenuItems">
+                        <li><a href="#" class="goToBol"><span class=""><i style="color: #4EA8AF;" class="fa fa-calendar" aria-hidden="true"></i>&nbsp;Book now</span></a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div></div>
+    </header>
+
+
+    
+
+
+
+
+
+
+
+
+<section class="revolution-slider">
+    <div class="bannercontainer" style="overflow: visible;">
+        <div class="banner revslider-initialised tp-simpleresponsive" id="revslider-610" style="height: 207px;">
+            <ul class="tp-revslider-mainul" style="display: block; overflow: hidden; width: 100%; height: 100%; max-height: none;">
+
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli active-revslide" style="width: 100%; height: 100%; overflow: hidden; z-index: 18; visibility: hidden; opacity: 0;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075039/Hotels/8578/WebSite/m707pkvzrzzx4zgo8tar.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075039/Hotels/8578/WebSite/m707pkvzrzzx4zgo8tar.jpg" style="background-color: rgba(0, 0, 0, 0); background-repeat: no-repeat; background-image: url(&quot;https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075039/Hotels/8578/WebSite/m707pkvzrzzx4zgo8tar.jpg&quot;); background-size: cover; background-position: left bottom; width: 100%; height: 100%; opacity: 1; visibility: inherit;"></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 25px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 21px; left: 46.7316px; top: 13.8307px; visibility: visible; opacity: 0; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00166, 0, -23.0512, 0, 1); transition: all 0s ease 0s;">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 14px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 14px; left: 46.7316px; top: 48.4076px; visibility: visible; opacity: 0; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00166, 0, -23.0512, 0, 1); transition: all 0s ease 0s;">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli active-revslide current-sr-slide-visible" style="width: 100%; height: 100%; overflow: hidden; z-index: 18; visibility: inherit; opacity: 1;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075070/Hotels/8578/WebSite/gnj7m1drtykew8fxnmjh.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075070/Hotels/8578/WebSite/gnj7m1drtykew8fxnmjh.jpg" style="background-color: rgba(0, 0, 0, 0); background-repeat: no-repeat; background-image: url(&quot;https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075070/Hotels/8578/WebSite/gnj7m1drtykew8fxnmjh.jpg&quot;); background-size: cover; background-position: left bottom; width: 100%; height: 100%; opacity: 1; visibility: inherit;"></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 25px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 21px; left: 46.7316px; top: 13.8307px; visibility: visible; opacity: -0.0974671; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00161, 0, -25.298, 0, 1); transition: all 0s ease 0s;">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 14px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 14px; left: 46.7316px; top: 48.4076px; visibility: visible; opacity: -0.0974545; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00161, 0, -25.2977, 0, 1); transition: all 0s ease 0s;">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli active-revslide" style="width: 100%; height: 100%; overflow: hidden; z-index: 20; visibility: inherit; opacity: 1;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075171/Hotels/8578/WebSite/wnlro24nevurog0ws9hd.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075171/Hotels/8578/WebSite/wnlro24nevurog0ws9hd.jpg" style="background-color: rgba(0, 0, 0, 0); background-repeat: no-repeat; background-image: url(&quot;https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075171/Hotels/8578/WebSite/wnlro24nevurog0ws9hd.jpg&quot;); background-size: cover; background-position: left bottom; width: 100%; height: 100%; opacity: 0;"></div><div class="slot" style="position:absolute;top:0px;left:0px;overflow:hidden;width:785.6px;height:207px"><div class="slotslide" style="position: absolute; top: 0px; left: 0px; width: 785.6px; height: 207px; overflow: hidden; visibility: inherit; opacity: 0.0388361; transform: translate3d(0px, 0px, 0px);"><div style="background-color:rgba(0, 0, 0, 0);position:absolute;top:0px;left:0px;width:785px;height:207px;background-image:url(https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075171/Hotels/8578/WebSite/wnlro24nevurog0ws9hd.jpg);background-repeat:no-repeat;background-size:cover;background-position:left bottom;"></div></div></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 25px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 21px; left: 46.7316px; top: 13.8307px; visibility: visible; opacity: 0; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00166, 0, -23.0512, 0, 1); transition: all 0s ease 0s;">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack" style="min-height: 0px; min-width: 0px; line-height: 14px; border-width: 0px; margin: 0px; padding: 0px 2px; letter-spacing: 0px; font-size: 14px; left: 46.7316px; top: 48.4076px; visibility: visible; opacity: 0; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -0.00166, 0, -23.0512, 0, 1); transition: all 0s ease 0s;">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli" style="width: 100%; height: 100%; overflow: hidden;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075178/Hotels/8578/WebSite/geijfwl8ahhrmkqa3ylp.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075178/Hotels/8578/WebSite/geijfwl8ahhrmkqa3ylp.jpg" style="background-color:rgba(0, 0, 0, 0);background-repeat:no-repeat;background-image:url(https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075178/Hotels/8578/WebSite/geijfwl8ahhrmkqa3ylp.jpg);background-size:cover;background-position:left bottom;width:100%;height:100%;"></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli" style="width: 100%; height: 100%; overflow: hidden;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075249/Hotels/8578/WebSite/mnpgsuhal9pbv2d6eji8.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075249/Hotels/8578/WebSite/mnpgsuhal9pbv2d6eji8.jpg" style="background-color:rgba(0, 0, 0, 0);background-repeat:no-repeat;background-image:url(https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075249/Hotels/8578/WebSite/mnpgsuhal9pbv2d6eji8.jpg);background-size:cover;background-position:left bottom;width:100%;height:100%;"></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+                    <!-- Slide n -->
+                    <li data-transition="fade" data-slotamount="7" data-masterspeed="1500" class="tp-revslider-slidesli" style="width: 100%; height: 100%; overflow: hidden; visibility: hidden; opacity: 0; z-index: 18;">
+                        <!-- Main Image -->
+                        <div class="slotholder" style="width:100%;height:100%;" data-duration="undefined" data-zoomstart="undefined" data-zoomend="undefined" data-rotationstart="undefined" data-rotationend="undefined" data-ease="undefined" data-bgpositionend="undefined" data-bgposition="left bottom" data-kenburns="undefined" data-easeme="undefined" data-bgfit="cover" data-bgfitend="undefined" data-owidth="undefined" data-oheight="undefined"><div class="tp-bgimg defaultimg" data-lazyload="undefined" data-bgfit="cover" data-bgposition="left bottom" data-bgrepeat="no-repeat" data-lazydone="undefined" src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550074179/Hotels/8578/WebSite/aufincqhk7vvpxdsxxp9.jpg" data-src="https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550074179/Hotels/8578/WebSite/aufincqhk7vvpxdsxxp9.jpg" style="background-color:rgba(0, 0, 0, 0);background-repeat:no-repeat;background-image:url(https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550074179/Hotels/8578/WebSite/aufincqhk7vvpxdsxxp9.jpg);background-size:cover;background-position:left bottom;width:100%;height:100%;"></div></div>
+                        <!-- Layers -->
+                        <!-- Layer 1 -->
+                        <div class="caption sft revolution-starhotel bigtext tp-caption start" data-x="100" data-y="30" data-speed="700" data-start="1700" data-easing="easeOutBack">
+
+
+                            Backpackers House Venice
+
+
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="caption sft revolution-starhotel smalltext tp-caption start" data-x="100" data-y="105" data-speed="800" data-start="1700" data-easing="easeOutBack">
+                            <span></span>
+                        </div>
+                        <!-- Layer 3 -->
+                        
+                    </li>
+            </ul>
+        <div class="tp-loader spinner0" style="display: none;"><div class="dot1"></div><div class="dot2"></div><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div><div class="tp-bannertimer" style="width: 0%; transform: matrix(1, 0, 0, 1, 0, 0); visibility: hidden;"></div></div>
+    <div style="position: absolute; margin-top: -20px; left: 20px; top: 103px;" class="tp-leftarrow  tparrows default round"><div class="tp-arr-allwrapper"><div class="tp-arr-iwrapper"><div class="tp-arr-imgholder" style="visibility: inherit; opacity: 0.283024; background-image: url(&quot;https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075039/Hotels/8578/WebSite/m707pkvzrzzx4zgo8tar.jpg&quot;);"></div><div class="tp-arr-imgholder2"></div><div class="tp-arr-titleholder"></div><div class="tp-arr-subtitleholder"></div></div></div></div><div style="position: absolute; margin-top: -20px; right: 20px; top: 103px;" class="tp-rightarrow  tparrows default round"><div class="tp-arr-allwrapper"><div class="tp-arr-iwrapper"><div class="tp-arr-imgholder" style="visibility: inherit; opacity: 0.283024; background-image: url(&quot;https://res.cloudinary.com/hotelnet-srl/image/upload/h_1000,c_scale,f_auto,q_auto:low/v1550075171/Hotels/8578/WebSite/wnlro24nevurog0ws9hd.jpg&quot;);"></div><div class="tp-arr-imgholder2"></div><div class="tp-arr-titleholder"></div><div class="tp-arr-subtitleholder"></div></div></div></div></div>
+</section>
+
+
+<!-- Widget -->
+
+<section id="reservation-form">
+    <div class="container">
+        <div class="row">
+            <div class="preWidget" style="">
+                <div class="bolWidget" style="
+"><span style="display: inline-block; bottom: 140px;" class="bestPriceSlot bestPriceSlotDesktop"><i class="closeBestPrice fa fa-times-circle" aria-hidden="true"></i><div class="bestPriceWidget"> <div class="bestPriceZone compareSlot"><div class="bestPriceLabel">Best Price</div><div class="bestPriceValue">€ 36.00</div><div class="bestPriceSlogan">Booking directly with us you have:<br><ul class=""><li>Best rate guarantee</li><li>Easy and safe booking</li><li>No extra fee</li></ul></div></div><div class="channelCheckZone compareSlot"><table style="width:100%;margin-top:10px;"><tbody><tr><td>Booking.com:</td><td>€ 41.36</td></tr><tr><td>Expedia:</td><td>€ 41.36</td></tr><tr><td>Agoda:</td><td>€ 41.36</td></tr><tr class="bestPriceCompared"><td>Our website</td><td>€ 36.00</td></tr></tbody></table></div></div></span><link href="https://scripts.resasecure.net/serv_jScript/webLibraries/css/HNwidget.css" rel="stylesheet"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=1"><span class="hnWidgetMainContainer"><span class="inputContainer arrivalHotelDateContainer reset-this"><span class="inputLabel reset-this">Arrival</span><input style="cursor: pointer;" id="arrivalHotelDate" type="text" class="arrivalHotelDate reset-this hasDatepicker" readonly="readonly"></span><span class="inputContainer nightsInputContainer reset-this"><span class="inputLabel reset-this">Departure</span><select id="nights" class="reset-this">  <option value="1">09/15/2020 (1 night)</option>  <option value="2">09/16/2020 (2 nights)</option>  <option value="3">09/17/2020 (3 nights)</option>  <option value="4">09/18/2020 (4 nights)</option>  <option value="5">09/19/2020 (5 nights)</option>  <option value="6">09/20/2020 (6 nights)</option>  <option value="7">09/21/2020 (7 nights)</option>  <option value="8">09/22/2020 (8 nights)</option>  <option value="9">09/23/2020 (9 nights)</option>  <option value="10">09/24/2020 (10 nights)</option>  <option value="11">09/25/2020 (11 nights)</option>  <option value="12">09/26/2020 (12 nights)</option>  <option value="13">09/27/2020 (13 nights)</option>  <option value="14">09/28/2020 (14 nights)</option>  <option value="15">09/29/2020 (15 nights)</option>  <option value="16">09/30/2020 (16 nights)</option>  <option value="17">10/01/2020 (17 nights)</option>  <option value="18">10/02/2020 (18 nights)</option>  <option value="19">10/03/2020 (19 nights)</option>  <option value="20">10/04/2020 (20 nights)</option>  <option value="21">10/05/2020 (21 nights)</option>  <option value="22">10/06/2020 (22 nights)</option>  <option value="23">10/07/2020 (23 nights)</option>  <option value="24">10/08/2020 (24 nights)</option>  <option value="25">10/09/2020 (25 nights)</option>  <option value="26">10/10/2020 (26 nights)</option>  <option value="27">10/11/2020 (27 nights)</option>  <option value="28">10/12/2020 (28 nights)</option>  <option value="29">10/13/2020 (29 nights)</option>  <option value="30">10/14/2020 (30 nights)</option> </select></span><span class="inputContainer reset-this">  <span class="inputLabel reset-this">Guests</span><span class="guestsInputContainer">  <input style="cursor: pointer;" id="guests" value=" rooms: 1, people: 2" type="text" class="hasDatepicker reset-this" readonly="readonly"></span> <span class="peopleSelection reset-this">      <span class="addRoom reset-this"><i class="fa fa-user-plus" aria-hidden="true"></i></span>     <span class="savePeopleSelection btn btn-primary btn-block reset-this">Save</span>  <span class="roomSelectionArea reset-this"><span class="inputContainer adultsContainer reset-this"><span class="inputLabel reset-this">Adults</span><select class="adults reset-this">  <option value="1">1</option>  <option selected="" value="2">2</option>  <option value="3">3</option>  <option value="4">4</option>  <option value="5">5</option>  <option value="6">6</option>  </select></span><span class="inputContainer childrenContainer reset-this"><span class="inputLabel reset-this">Children</span>  <select class="children childrenSelector reset-this">  <option value="0">0</option>  <option value="1">1</option>  <option value="2">2</option>  <option value="3">3</option> </select></span><span class="childrenAgeContainer reset-this"><span class="childrenAgeLabel reset-this">Children age</span> <span class="inputContainer childrenAgeInputsContainer reset-this"><span class="inputLabel reset-this"></span>    <select class="childrenAge reset-this">  <option value="0">0</option>  <option value="1">1</option>  <option value="2">2</option>  <option value="3">3</option>  <option value="4">4</option>  <option value="5">5</option>  <option value="6">6</option>  <option value="7">7</option>  <option value="8">8</option>  <option value="9">9</option>  <option value="10">10</option>  <option value="11">11</option>  <option value="12">12</option>   </select>    <select class="childrenAge reset-this">  <option value="0">0</option>  <option value="1">1</option>  <option value="2">2</option>  <option value="3">3</option>  <option value="4">4</option>  <option value="5">5</option>  <option value="6">6</option>  <option value="7">7</option>  <option value="8">8</option>  <option value="9">9</option>  <option value="10">10</option>  <option value="11">11</option>  <option value="12">12</option>   </select>    <select class="childrenAge reset-this">  <option value="0">0</option>  <option value="1">1</option>  <option value="2">2</option>  <option value="3">3</option>  <option value="4">4</option>  <option value="5">5</option>  <option value="6">6</option>  <option value="7">7</option>  <option value="8">8</option>  <option value="9">9</option>  <option value="10">10</option>  <option value="11">11</option>  <option value="12">12</option>   </select>    <select class="childrenAge reset-this">  <option value="0">0</option>  <option value="1">1</option>  <option value="2">2</option>  <option value="3">3</option>  <option value="4">4</option>  <option value="5">5</option>  <option value="6">6</option>  <option value="7">7</option>  <option value="8">8</option>  <option value="9">9</option>  <option value="10">10</option>  <option value="11">11</option>  <option value="12">12</option>   </select></span></span><span class="addedRoomLael reset-this">Room 1</span></span></span></span><span style="display: inline-block; bottom: 140px;" class="bestPriceSlot bestPriceSlotMobile"><i class="closeBestPrice fa fa-times-circle" aria-hidden="true"></i><div class="bestPriceWidget"> <div class="bestPriceZone compareSlot"><div class="bestPriceLabel">Best Price</div><div class="bestPriceValue">€ 36.00</div><div class="bestPriceSlogan">Booking directly with us you have:<br><ul class=""><li>Best rate guarantee</li><li>Easy and safe booking</li><li>No extra fee</li></ul></div></div><div class="channelCheckZone compareSlot"><table style="width:100%;margin-top:10px;"><tbody><tr><td>Booking.com:</td><td>€ 41.36</td></tr><tr><td>Expedia:</td><td>€ 41.36</td></tr><tr><td>Agoda:</td><td>€ 41.36</td></tr><tr class="bestPriceCompared"><td>Our website</td><td>€ 36.00</td></tr></tbody></table></div></div></span><span id="searchAvail" class="searchAvail btn btn-primary btn-block reset-this">Book now</span></span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Main description -->
+
+<div class="container">
+    <div class="row" style="margin-top: 40px; padding: 0 20px;">
+
+        <section>
+
+            <div class="row">
+                <div class="col-sm-12 col-md-6 pull-right hidden-xs hidden-sm">
+                    <div class="imgResponsive" style="height: 350px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548668912/Hotels/8578/HotelMainImage/wykl78efs2ppjusvjvza.jpg')"></div>
+                </div>
+
+                <div style="max-height: 300px; padding-left: 32px; overflow-wrap: break-word;" class="truncateTextMore hotelMainDescriptionTruncated">
+                    Backpackers House Venice is situated in Campo Santa Margherita area, one of the most beautiful and lively places in Venetian life, where you will find a many typical restaurants and cosy bars open until late. Backpackers House Venice propose simply furnished rooms and free Wi-Fi. A hotel's facilities include a shared lounge and a 24-hour front desk. Our Rooms, available with a private or a shared bathroom, come with a desk and fans.  <br>  The highlight of our hostel is the location: from Campo Santa Margherita you can reach in 5 minutes the train station as well as the bus station in Piazzale Roma. The main attractions of Venice, such as the Rialto Bridge, the Academy of Fine Arts, the Guggenheim Museum and Piazza San Marco are a short distance from the hostel too. Book your room at the hostel Backpackers House Venice and enjoy the wonders of Venice at a really low price!
+
+
+
+                </div>
+                <div style="display: none; padding-left: 32px; overflow-wrap: break-word;" class="hotelMainDescrtiption truncateTextMore">
+                    Backpackers House Venice is situated in Campo Santa Margherita area, one of the most beautiful and lively places in Venetian life, where you will find a many typical restaurants and cosy bars open until late. Backpackers House Venice propose simply furnished rooms and free Wi-Fi. A hotel's facilities include a shared lounge and a 24-hour front desk. Our Rooms, available with a private or a shared bathroom, come with a desk and fans.  <br>  The highlight of our hostel is the location: from Campo Santa Margherita you can reach in 5 minutes the train station as well as the bus station in Piazzale Roma. The main attractions of Venice, such as the Rialto Bridge, the Academy of Fine Arts, the Guggenheim Museum and Piazza San Marco are a short distance from the hostel too. Book your room at the hostel Backpackers House Venice and enjoy the wonders of Venice at a really low price!
+
+
+
+                </div>
+
+
+
+                <div class="showMoreText" style="display:none;    font-weight: initial;
+    width: 100%;
+    text-align: center;
+    font-size: 19px;
+    margin-top:25px;
+    color: #75c5cf;">
+                    <span style="font-weight:initial;cursor:pointer;" class=" mt30 pagination-centered">+ Details</span>
+                </div>
+
+
+            </div>
+
+            <script>
+
+                $(document).ready(function () {
+
+                    $('.showMoreText').click(function () {
+
+                        $('.hotelMainDescriptionTruncated').hide();
+                        $('.showMoreText').hide();
+                        $('.hotelMainDescrtiption').show();
+
+                    });
+
+
+
+                });
+
+            </script>
+
+
+        </section>
+
+
+    </div>
+</div>
+
+
+<!-- Offers -->
+
+
+
+
+<!-- Rooms -->
+
+<section class="rooms mt50">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="lined-heading"><span>Our rooms</span></h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<!-- Rooms -->
+<section class="rooms">
+    <div class="container">
+        <div class="row">
+         
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549970341/Hotels/8578/RoomMainImage/0W76H/md6pfrh1sbhpgcq4hdmy.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Triple Room with share Bathroom</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>This 18-m² triple room has a shared bathroom and tile / marble floor. Free Wi-Fi.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Internet</li>
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Safe box</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Wifi connection</li>
+                                                    <li><i class="fa fa-check-circle"></i>Ceiling fan</li>
+                                                    <li><i class="fa fa-check-circle"></i>Closets in room</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\0W76H" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549968794/Hotels/8578/RoomMainImage/947H1/wz4qbp9k0d4jpl2zsipi.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Double Room with Shared Bathroom</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>A 17 m² double room with shared bathroom features a desk, fans and tiled floors. Free WiFi is available.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Safe box</li>
+                                                    <li><i class="fa fa-check-circle"></i>Bathtub/shower combination</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Coffee/Tea maker</li>
+                                                    <li><i class="fa fa-check-circle"></i>Desk</li>
+                                                    <li><i class="fa fa-check-circle"></i>Refrigerator</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\947H1" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549972245/Hotels/8578/RoomMainImage/BLGSL/txbzrrce0maxbn7uqh5s.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Triple Private with Private Bathroom</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>Beautiful triple room of 26 m² with panoramic view and private bathroom. Free Wi-Fi.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Safe box</li>
+                                                    <li><i class="fa fa-check-circle"></i>Bathtub</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Coffee/Tea maker</li>
+                                                    <li><i class="fa fa-check-circle"></i>Iron</li>
+                                                    <li><i class="fa fa-check-circle"></i>Oven</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\BLGSL" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549969611/Hotels/8578/RoomMainImage/BYLLX/khgkaqlepjxnqrcao5sc.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Quadruple Room with Shared Bathroom</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>A cosy 26 m² quadruple room comes with tiled floors and a shared bathroom. Free WiFi.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Coffee/Tea maker</li>
+                                                    <li><i class="fa fa-check-circle"></i>Wifi connection</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Ceiling fan</li>
+                                                    <li><i class="fa fa-check-circle"></i>Closets in room</li>
+                                                    <li><i class="fa fa-check-circle"></i>Shared bathroom</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\BYLLX" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549971181/Hotels/8578/RoomMainImage/FU7J8/rfxfgfag110ynf1b5ruj.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Double Room with Private Bathroom</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>A cosy 17-m² double room, with a private bathroom and hair dryer, comes with a desk, fans and tiled floors. Free Wi-Fi.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Safe box</li>
+                                                    <li><i class="fa fa-check-circle"></i>Bathtub</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Coffee/Tea maker</li>
+                                                    <li><i class="fa fa-check-circle"></i>Iron</li>
+                                                    <li><i class="fa fa-check-circle"></i>Oven</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\FU7J8" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="col-sm-4" style="margin-bottom:25px;">
+                    <div class="room-thumb">
+                        <div class="imgResponsive" style="min-height: 228px; background-image:url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548673892/Hotels/8578/RoomImages/TI8J1/zngsrsyxuwlregkcjuqt.jpg')"></div>
+                        <div class="mask">
+                            <div class="main">
+                                <h5 style="text-overflow: ellipsis;">Bed in 5-Bed Mixed Dormity room</h5>
+
+                            </div>
+                            <div class="content">
+                                <div class="thumbRoomDescription truncateText" style="overflow-wrap: break-word;">
+                                    <p>A Single bed in a dormitory with a shared bathroom. Free Wi-Fi.</p>
+                                    
+                                </div>
+                                <div class="row roomAmenitiesPreview" style="height: 65px;font-size:0.75em">
+
+
+
+
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Internet</li>
+                                                    <li><i class="fa fa-check-circle"></i>Hair dryer</li>
+                                                    <li><i class="fa fa-check-circle"></i>Bathrobe</li>
+
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-xs-6">
+
+
+                                            <ul class="list-unstyled">
+
+                                                    <li><i class="fa fa-check-circle"></i>Coffee/Tea maker</li>
+                                                    <li><i class="fa fa-check-circle"></i>Iron</li>
+                                                    <li><i class="fa fa-check-circle"></i>Oven</li>
+
+                                            </ul>
+
+                                        </div>
+
+
+
+
+                                </div>
+                                <a href="http://www.backpackershousevenice.it/en/Room\TI8J1" class="btn btn-primary btn-block">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+<!-- Amenities -->
+
+
+
+
+
+
+
+
+<!-- Map -->
+
+
+
+
+
+
+
+
+
+<iframe class="map-top" style="height:350px;width:100%;border:none;" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAX4lXh858PlufN1OfgyB6JUaxeuIuBlBc&amp;zoom=17
+&amp;q=Backpackers House Venice, Dorsoduro 2967/a in Campo Santa Margherita, 30123, Venice" allowfullscreen=""></iframe>
+
+
+<!-- Gallery -->
+
+
+<section class="gallery-slider mt50">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="lined-heading"><span>Gallery</span></h2>
+            </div>
+        </div>
+    </div>
+    <div id="owl-gallery" class="owl-carousel owl-theme" style="display: block; opacity: 1;">
+            <div class="owl-wrapper-outer autoHeight" style="height: 350px;"><div class="owl-wrapper" style="width: 4192px; left: 0px; display: block; transition: all 800ms ease 0s; transform: translate3d(-1048px, 0px, 0px);"><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1548675982/Hotels/8578/HotelImages/fksijvr7hry5zsdsv3gp.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548675982/Hotels/8578/HotelImages/fksijvr7hry5zsdsv3gp.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1548675997/Hotels/8578/HotelImages/dh79q7mujtdquvs7milh.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548675997/Hotels/8578/HotelImages/dh79q7mujtdquvs7milh.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1549977544/Hotels/8578/HotelImages/ib182unlgsfbgn2xft9a.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549977544/Hotels/8578/HotelImages/ib182unlgsfbgn2xft9a.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1548676016/Hotels/8578/HotelImages/nhjylb8iqmwr9pobni0o.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548676016/Hotels/8578/HotelImages/nhjylb8iqmwr9pobni0o.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1548676040/Hotels/8578/HotelImages/hqgalupwdyf0nkbcgaxp.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1548676040/Hotels/8578/HotelImages/hqgalupwdyf0nkbcgaxp.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1549977483/Hotels/8578/HotelImages/yk4zs7wzlzn75wtkzqlf.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549977483/Hotels/8578/HotelImages/yk4zs7wzlzn75wtkzqlf.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1549977505/Hotels/8578/HotelImages/yknrtalthcdc7jciie5y.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549977505/Hotels/8578/HotelImages/yknrtalthcdc7jciie5y.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div><div class="owl-item" style="width: 262px;"><div style="height: 350px !important;" class="item ">
+                <a href="https://res.cloudinary.com/hotelnet-srl/image/upload/h_800,c_scale,f_auto,q_auto:low/v1549977521/Hotels/8578/HotelImages/cghoyjau9pn5jhfkjv8i.jpg " data-rel="prettyPhoto[gallery1]" rel="prettyPhoto[gallery1]">
+                    <div class="imgResponsive itemOwlOnSlide" style="height:350px !important;background-image: url('https://res.cloudinary.com/hotelnet-srl/image/upload/h_500,c_scale,f_auto,q_auto:low/v1549977521/Hotels/8578/HotelImages/cghoyjau9pn5jhfkjv8i.jpg');"></div>
+                    <i class="fa fa-search"></i>
+                </a>
+            </div></div></div></div>
+            
+            
+            
+            
+            
+            
+            
+    </div>
+    <style>
+        .itemOwlOnSlide:hover {
+            opacity: 0.3;
+        }
+    </style>
+</section>
+
+
+<script src="https://scripts.resasecure.net/serv_jScript/webLibraries/js/HNwidget.js"></script>
+<style>
+    .owl-carousel .owl-item img {
+        height: auto;
+        width: 100%;
+        display: block;
+    }
+
+    .owl-carousel .item {
+        margin: 0px;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#myModal').modal('show');
+
+        var hasPromo = 'false' === "true";
+
+        $('.bolWidget').HNetBOL({
+            hotel: '8578',
+            maxNights: 30,
+            maxAdults: 6,
+            maxChildren: 3,
+            maxChildAge: 12,
+            language: 'gb',
+            hasPromo: hasPromo,
+            hasBestPrice: true,
+            availableDate: '2020-09-14',
+            openMode: 1,
+            wbeRelease: 5
+
+            //iframePageUrl: 'http://www.backpackershousevenice.it/en/booking'
+
+        });
+
+    });
+
+</script>
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <h4>Backpackers House Venice</h4>
+                    <p>Backpackers House Venice is situated in Campo Santa Margherita area, one of the most beautiful and lively places in Venetian life.We propose simply furnished rooms and free Wi-Fi. </p>
+                </div>
+
+                <div class="col-md-3 col-sm-3">
+                    <h4>Address</h4>
+                    <address>
+                        <b>Backpackers House Venice</b>
+                        <br>
+                        Dorsoduro 2967/a in Campo Santa Margherita,
+                        30123
+                        <br>
+                        <b>Venice </b>
+                        <br>
+                        <span title="Phone"><i class="fa fa-phone"></i></span>
+                        <a href="tel:+39 329 472 4966">+39 329 472 4966</a><br>
+                            <span title="Mobile"><i class="fa fa-mobile"></i></span>
+                            <a href="tel:+39 3772854536">+39 3772854536</a><br>
+                                                <span title="Email"><i class="fa fa-envelope"></i></span>
+                        <a href="mailto:housevenice1@gmail.com;jalamctg8@gmail.com">housevenice1@gmail.com;jalamctg8@gmail.com</a><br>
+                    </address>
+                </div>
+
+
+
+
+                <div class="col-md-3 col-sm-3" style="">
+
+
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 footerItem firstFooterItem">© 2020 Backpackers House Venice  </div>
+
+
+
+
+                                            <div class="col-md-2 col-sm-2 footerItem">
+                            <a href="http://www.backpackershousevenice.it/en/position">How to reach us</a>
+                        </div>
+                    <div class="col-md-2 col-sm-2 footerItem">
+                        <ul>
+                            <li><a href="http://www.backpackershousevenice.it/en/contact">Contacts</a></li>
+                        </ul>
+                    </div>
+
+
+
+
+                    <div class="col-md-2 col-sm-2 footerItem">
+
+
+
+                            <ul>
+                                <li><a target="_blank" href="http://www.hotel-net.it">credits: Hotelnet</a></li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </footer>
+
+    <!-- Go-top Button -->
+    <div id="go-top"><i class="fa fa-angle-up fa-2x"></i></div>
+
+
+
+    <!--Customer Alliance e-Reputation script-->
+
+
+
+
+    <!--LAST RESERVATION MESSAGE-->
+
+    <div class="slideMessage" style="max-width: 300px; font-weight: 400; position: fixed; bottom: 0px; color: white; z-index: 9999; margin-left: 10px; background: rgba(0, 0, 0, 0.75); padding: 20px; border-radius: 10px; margin-bottom: 75px;">
+        <div class="closeSlideMessage" style="display: none; cursor: pointer; clear: both; color: gray; position: relative; height: 0px; top: -16px; right: -260px;">
+            <i class="fa fa-close"></i>
+        </div>
+        <div style="float: left; clear: both; font-size: 30px; color: #F7931E; width: 15%;">
+
+            <i class="fa fa-clock-o"></i>
+        </div>
+        <div style="float: right; width: 85%; text-align: justify;">
+
+
+            The last reservation was made 2 hours ago. Book now our best rates before the best deals are taken by someone else!
+
+        </div>
+    </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                /* Slide message */
+                var sliderTime;
+                sliderTime = setTimeout(function () {
+                    $('.slideMessage').slideDown("slow",
+                        function () { sliderTime = setTimeout(function () { $('.slideMessage').hide() }, 10000) }
+
+                        )
+                }, 5000);
+
+
+                $('.closeSlideMessage').click(function () {
+                    $('.slideMessage').hide();
+                });
+
+
+
+
+
+                $('.slideMessage').hover(function () { $('.closeSlideMessage').show(); }, function () { $('.closeSlideMessage').hide(); });
+
+
+
+            });
+        
+            
+            
+        </script>
+
+
+    
+
+
+<script src="https://scripts.resasecure.net/cookiePolicy/jquery.cookiebar.js"></script>
+<link rel="stylesheet" type="text/css" href="https://scripts.resasecure.net/cookiePolicy/jquery.cookiebar.css">
+
+<script>
+
+
+    $(document).ready(function () {
+
+        $.cookieBar({
+            fixed: true,
+            bottom: true,
+            zindex: '9999',
+            policyButton: true,
+            cookieId: "STDWEB-8578",
+            language: "GB"
+        });
+
+
+    });
+
+
+</script>
+
+
+
+    <!-- Optimus -->
+    <script type="text/javascript">
+
+        (function () {
+
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+
+            g.type = 'text/javascript'; g.async = true; g.defer = true;
+
+            g.src = 'https://optimus.360and1.com/optimus-H12oVaOz7.js'; s.parentNode.insertBefore(g, s);
+
+        })();
+
+    </script>
+    <!-- End Optimus Code -->
+    <script>
+
+	    window.dataHotel360and1 = {
+
+	        'hotelID': '8578'
+
+	    };
+
+    </script>
+
+
+
+
+<!--CUSTOM STYLES-->
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all"><a class="ui-datepicker-prev ui-corner-all ui-state-disabled" title="Prev"><span class="ui-icon ui-icon-circle-triangle-w">Prev</span></a><a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click" title="Next"><span class="ui-icon ui-icon-circle-triangle-e">Next</span></a><div class="ui-datepicker-title"><select class="ui-datepicker-month" data-handler="selectMonth" data-event="change"><option value="8" selected="selected">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option></select><select class="ui-datepicker-year" data-handler="selectYear" data-event="change"><option value="2020" selected="selected">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option></select></div></div><table class="ui-datepicker-calendar"><thead><tr><th class="ui-datepicker-week-end"><span title="Sunday">Su</span></th><th><span title="Monday">Mo</span></th><th><span title="Tuesday">Tu</span></th><th><span title="Wednesday">We</span></th><th><span title="Thursday">Th</span></th><th><span title="Friday">Fr</span></th><th class="ui-datepicker-week-end"><span title="Saturday">Sa</span></th></tr></thead><tbody><tr><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">1</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">2</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">3</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">4</span></td><td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">5</span></td></tr><tr><td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">6</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">7</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">8</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">9</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">10</span></td><td class=" ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">11</span></td><td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">12</span></td></tr><tr><td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span class="ui-state-default">13</span></td><td class=" ui-datepicker-days-cell-over  ui-datepicker-current-day ui-datepicker-today" data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default ui-state-highlight ui-state-active ui-state-hover" href="#">14</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">15</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">16</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">17</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">18</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">19</a></td></tr><tr><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">20</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">21</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">22</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">23</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">24</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">25</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">26</a></td></tr><tr><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">27</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">28</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">29</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="8" data-year="2020"><a class="ui-state-default" href="#">30</a></td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td></tr></tbody></table></div><script>  function loadJSON(path, success) {    var xhr = new XMLHttpRequest();    var thisPath = path;    xhr.onreadystatechange = function () {      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {        if (xhr.responseText == "") {          var error = "Missing_json_HotelNet";          window.sy = {            uid: error, usid: "" , path: thisPath , dataHotel360and1 : window.dataHotel360and1  };          var data = new FormData();          var xhr2 = new XMLHttpRequest();          var url = "https://tag.statshop.fr/";          data.append("errorMessage", error);          data.append("sy", JSON.stringify(window.sy));          data.append("url", window.location.href);          xhr2.open("POST", "https://tag.statshop.fr/v2/javascriptErrorHandler.php", true);          xhr2.send(data);        }        else if (success)  success(JSON.parse(xhr.responseText));      }    };    xhr.open("GET", path, true);    xhr.send();  }  if (window.dataHotel360and1 && window.dataHotel360and1.hotelID) {    var hotelId = window.dataHotel360and1.hotelID;  }  else {    var hotelId = "missing_dataHotel360and1_HotelNet";  }  loadJSON('https://manager.statshop.fr/assets/optimus_config/hn_' + hotelId + '.json', function (data) {    if (data[hotelId] && data[hotelId]['statshop'] && data[hotelId]['statshop']['active'] === 1) {      var hotel_login = data[hotelId]['statshop']['login'];      window.sy = {        uid: hotel_login, usid: "", site_code: hotelId};      var stats = document.createElement('script');      stats.type = 'text/javascript';      stats.src = 'https://' + hotel_login + '.tag.statshop.fr/v2/tracker.js';      var sstats = document.getElementsByTagName('script')[0];      sstats.parentNode.insertBefore(stats, sstats);    }    if (data[hotelId] && data[hotelId]['adnxs'] && data[hotelId]['adnxs']['active'] === 1) {      var seg_visitor = data[hotelId]['adnxs']['seg_visitor'];      (function () {        var adnxs = document.createElement('script');        adnxs.type = 'text/javascript';        adnxs.src = 'https://secure.adnxs.com/seg?add=' + seg_visitor + '&t=1';        var sw2r = document.getElementsByTagName('script')[0];        sw2r.parentNode.insertBefore(adnxs, sw2r);      }      )();    }    if (data[hotelId] && data[hotelId]['ga'] && data[hotelId]['ga']['active'] === 1) {      var gc_id = data[hotelId]['ga']['gc_id'];      var gc_seg_vis_label = data[hotelId]['ga']['gc_seg_vis_label'];      (function () {        var fp_body = document.getElementsByTagName('body')[0];        var conversion = document.createElement('script');        conversion.type = 'text/javascript';        conversion.src = '//www.googleadservices.com/pagead/conversion.js';        var gascript = document.createElement('img');        gascript.setAttribute('width', '1px');        gascript.setAttribute('height', '1px');        gascript.setAttribute('style', 'display:none');        gascript.src = 'https://www.googleadservices.com/pagead/conversion/' + gc_id + '/?label=' + gc_seg_vis_label + '&guid=ON&script=0';        var sgascript = document.getElementsByTagName('script')[0];        sgascript.parentNode.insertBefore(conversion, sgascript);        if (fp_body) fp_body.appendChild(gascript);        else document.write('<img src="' + gascript.src + '" width="1" height="1"/>');      }      )();    }    if (data[hotelId] && data[hotelId]['GoogleAnalytics'] && data[hotelId]['GoogleAnalytics']['active'] === 1) {      var GANALYTICS_ID = data[hotelId]['GoogleAnalytics']['ID'];      var t = document.createElement("script");      t.type = "text/javascript";      t.async = !0;      t.src = ("https://www.googletagmanager.com/gtag/js?id="+ GANALYTICS_ID);      var e = document.getElementsByTagName("script")[0];      e.parentNode.insertBefore(t, e);      window.dataLayer = window.dataLayer || [];      function gtag(){        dataLayer.push(arguments);      }      gtag('js', new Date());      gtag('config', GANALYTICS_ID);    }    if (data[hotelId] && data[hotelId]['Bing'] && data[hotelId]['Bing']['active'] === 1) {      var BING_TI = data[hotelId]['Bing']['Ti'];      (function (w, d, t, r, u) {        var f, n, i;        w[u] = w[u] || [], f = function () {          var o = {            ti: BING_TI                        };          o.q = w[u], w[u] = new UET(o), w[u].push("pageLoad")                    }          , n = d.createElement(t), n.src = r, n.async = 1, n.onload = n.onreadystatechange = function () {          var s = this.readyState;          s && s !== "loaded" && s !== "complete" || (f(), n.onload = n.onreadystatechange = null)                    }          , i = d.getElementsByTagName(t)[0], i.parentNode.insertBefore(n, i)                }      )(window, document, "script", "//bat.bing.com/bat.js", "uetq");    }    if (data[hotelId] && data[hotelId]['NSP'] && data[hotelId]['NSP']['active'] === 1) {      var nsp = document.createElement('script');      nsp.type = 'text/javascript';      nsp.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'ws3.smartp.com/sp_fct.js';      nsp.async = false;      var snsp = document.getElementsByTagName('script')[0];      snsp.parentNode.insertBefore(nsp, snsp);      nsp.onload = function () {        var NSP_HID = data[hotelId]['NSP']['HID_contact'];        if (window.dataOrder360and1 !== undefined) {          var sp_email = document.querySelector('#content .bg-gray.coords p').textContent.trim().replace(/<br>|</b>|<b>|↵/gm, '').split(' ').filter(function (element) {            return element.indexOf("@") != -1;          }                                                                                                                                                    ).join();          var sp = new Array();          var ci = "";          sp[0] = "?_hid=" + NSP_HID;          console.log(sp[0]);          sp[1] = "&login=" + sp_email;          console.log(sp[1]);          sp[2] = "&Civilite1=";          sp[3] = "&CodePostal1=";          sp[4] = "&Email1=" + sp_email;          console.log(sp[4]);          sp[5] = "&Mobile1=";          sp[6] = "&Nom1=";          sp[7] = "&Optin1=1";          sp[8] = "&Prenom1=";          if (typeof sp_t != 'undefined') sp_tracker(sp, ci);        }      }    }    if (data[hotelId] && data[hotelId]['NSP'] && data[hotelId]['NSP']['active'] === 1) {      var NSP_HIDCONV = data[hotelId]['NSP']['HID_conversion'];      if (window.dataOrder360and1 !== undefined) {        var sp_email = document.querySelector('#content .bg-gray.coords p').textContent.trim().replace(/<br>|</b>|<b>|↵/gm, '').split(' ').filter(function (element) {          return element.indexOf("@") != -1;        }                                                                                                                                                  ).join();        var spConv = new Array();        var ciConv = "";        spConv[0] = "?_hid=" + NSP_HIDCONV;        spConv[1] = "&login=" + sp_email;        spConv[2] = "&panier=0";        spConv[3] = "&pr_ach=0";        spConv[4] = "&pr_in=0";        spConv[5] = "&pr_out=0";        spConv[6] = "&pr_vu=0";        spConv[7] = "&trans_ca=0";        spConv[8] = "&trans_id=0";        spConv[9] = "&_class=";        spConv[10] = "&_title=";        if (typeof sp_t != 'undefined') sp_tracker(spConv, ciConv);      }    }  }          );</script></body></html>

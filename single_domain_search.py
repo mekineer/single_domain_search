@@ -6,12 +6,15 @@ import os
 import time
 import urllib
 from pathlib import Path
-from sys import exit 
+from sys import exit
+
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
 from datetime import datetime
+import requests
+
 logger = logging.getLogger("cdn")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(
@@ -52,7 +55,13 @@ def find_urls(netjson):
     a = []
     for i in netjson:
         if "connectStart" in i:
-            a.append(i["name"])
+            try:
+                r = requests.get(i["name"])
+                print(r.status_code)
+                if r.status_code==200:
+                    a.append(i["name"])
+            except:
+                pass
     return a
 
 
@@ -75,9 +84,15 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
-    # For Mac os just change the below line as it was before.
-    driver = webdriver.Chrome(executable_path="D:\Abubakar\single_domain_search-master\single_domain_search-master\chromedriver_win32\chromedriver.exe",
+    # Abubakar: For Mac os just change the below line as it was before.
+    # Marcos: Can the same relative path be used in both mac and windows?  Then no need to alter a hard-coded path.
+    # Marcos: Or, if chromedriver executable is different for mac and win, then change path dynamically by os library requesting the os version:
+    # "util/os_version_variable/chromedriver"
+    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
                               options=chrome_options)
+    # home_path,file_name_ = os.path.split(os.path.realpath(__file__))
+    # chromedriver = os.path.join(home_path,'chromedriver')
+    # driver = webdriver.Chrome(chromedriver,chrome_options=chrome_options)
 
     extracted_urls = []
 
@@ -88,7 +103,6 @@ def process_url(url):
         time.sleep(config_data.page_delay)
         script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
         net_stat = driver.execute_script(script_to_exec)
-
         if config_data.save_htmls:
             Path("htmls").mkdir(parents=True, exist_ok=True)
             url_html_file = urllib.parse.quote(url, safe='')
@@ -160,7 +174,8 @@ if __name__ == '__main__':
             logger.debug(f"searching google with params: {search_params}")
             for u in search(**search_params):
                 search_urls.append(u)
-
+            print(f"All urls recieved from google: {len(search_urls)}")
+            logger.debug(f"All urls recieved from google: {len(search_urls)}")
             new_urls = []
             for i in search_urls:
                 safe_url = urllib.parse.quote(i, safe='')
@@ -176,7 +191,7 @@ if __name__ == '__main__':
             start_num += limit_urls
             for url in new_urls:
                 stats.processed += 1
-                logger.debug(f"total urls processed: {stats.processed}")
+                logger.debug(f"total urls processed till now: {stats.processed}")
                 safe_url = urllib.parse.quote(url, safe='')
 
                 ext_urls = process_url(url)
@@ -195,6 +210,7 @@ if __name__ == '__main__':
                     print(f"***************** FOUND URL: {url}")
                     if found_current_batch == desired_count:
                         print(f"Found desired count of urls: {desired_count}")
+                        logger.debug(f"Found desired count of urls: {desired_count}")
                         exit(0)
     except Exception as e:
         logger.exception(e)

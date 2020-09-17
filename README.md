@@ -22,8 +22,8 @@ Instead of using Headless Chrome to request search results from Google, another 
 Currently the project is a python script to test the concept.  Later the project would be a web app.  The web app could be used to build a search database, by providing a portal for users to search a search engine, like Google.
 
 Is it possible for a visitor to the portal site, to present to Google their own IP address, instead of the portal site's IP address?
-
 Is it also possible, for the portal to access the search result, so that it can use the results to build a search database?
+Answer: "This can be done with Google's Custom Search javascript, in which case the end-user's web browser will be making the request, and not the OP's server." source: https://www.daniweb.com/programming/web-development/threads/523733/portal-to-search-engine
 
 The user's IP address, or any of the user's information, would not be kept. The database would be used to filter results in ways that Google's search syntax is not capable of filtering. These filtered results would be served to the user, alongside Google's results.
 
