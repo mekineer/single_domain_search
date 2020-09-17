@@ -1,6 +1,6 @@
 {
   "desired_count": 10,
-  "query": "backpacking desk",
+  "query": "tredmill",
   "batch_limit": 30,
   "pause_delay": 100,
   "output_file": "output.txt",
@@ -42,6 +42,6 @@
     "hearstapps.com",
     "highcharts.com",
     "paypal.com",
-    "paypalobjects.com
+    "paypalobjects.com"
   ]
 }
