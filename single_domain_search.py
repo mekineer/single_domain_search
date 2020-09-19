@@ -57,7 +57,7 @@ def find_urls(netjson):
         if "connectStart" in i:
             try:
                 r = requests.get(i["name"])
-                print(r.status_code)
+                #print(r.status_code)
                 if r.status_code==200:
                     a.append(i["name"])
             except:
@@ -88,7 +88,9 @@ def process_url(url):
     # Marcos: Can the same relative path be used in both mac and windows?  Then no need to alter a hard-coded path.
     # Marcos: Or, if chromedriver executable is different for mac and win, then change path dynamically by os library requesting the os version:
     # "util/os_version_variable/chromedriver"
-    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+    #driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+    #                          options=chrome_options)
+    driver = webdriver.Chrome(executable_path="D:\Abubakar\single_domain_search-master\single_domain_search-master\chromedriver_win32\chromedriver.exe",
                               options=chrome_options)
     # home_path,file_name_ = os.path.split(os.path.realpath(__file__))
     # chromedriver = os.path.join(home_path,'chromedriver')
@@ -151,13 +153,13 @@ if __name__ == '__main__':
         start_num = dbc.get_processed_count(query)
     else:
         start_num = 0
+    stats.processed  = start_num
     found_current_batch = 0
     print("Current start_num:",start_num)
     try:
         while True:
             stop_num = start_num + limit_urls
             search_params = {
-                "num": limit_urls,
                 "start": start_num,
                 "stop": stop_num,
                 "pause": pause_delay,
