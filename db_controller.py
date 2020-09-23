@@ -45,22 +45,14 @@ class DBController:
 
     def create_table(self):
         logger.debug("creating url table if not exist.")
-        sql_visited_urls = """
+        sql = """
         CREATE TABLE IF NOT EXISTS visited_urls (
             url text PRIMARY KEY,
             begin_date text NOT NULL,
             mark INTEGER DEFAULT 0
         );
         """
-        self._execute_query(sql_visited_urls)
-        sql_query_Info = """
-        CREATE TABLE IF NOT EXISTS query_Info (
-            query text PRIMARY KEY,
-            query_date DATE,
-            processed_count INTEGER DEFAULT 0
-        );
-        """
-        self._execute_query(sql_query_Info)
+        self._execute_query(sql)
 
     def mark_url(self, url, mark=1):
         logger.debug(f"marking: {mark}, url: {url}")
@@ -84,43 +76,3 @@ class DBController:
             VALUES(?, ?);
         """
         return self._execute_query(sql, (url, datetime.now())).lastrowid
-   # ""///////////////////////////////////////new content to db //////////////////////////""
-    
-    def get_searched(self, query):
-        sql = """
-        SELECT * FROM query_info WHERE query=?
-        """
-        return self._execute_query(sql, (query,)).fetchone()
-    
-    def add_query_info(self, query):
-        if self.get_searched(query):
-             sql = ''' UPDATE query_info
-              SET query_date = ? 
-              WHERE query = ?'''
-             return self._execute_query(sql, (datetime.now(), query))
-        else:
-            logger.debug(f"inserting in db query: {query}")
-            sql = """
-                INSERT INTO query_info (query,query_date)
-                VALUES(?, ?);
-                """
-            return self._execute_query(sql, (query, datetime.now())).lastrowid
-    
-    def update_query_count(self, query, count):
-        logger.debug(f"storing: {count}, query: {query}")
-        sql = ''' UPDATE query_info
-              SET processed_count = ? 
-              WHERE query = ?'''
-        return self._execute_query(sql, (count, query))
-    
-    def get_processed_count(self, query):
-        sql = """
-        SELECT processed_count FROM query_info WHERE query=?
-        """
-        return self._execute_query(sql, (query,)).fetchone()[0]
-    
-    def get_query_date(self, query):
-        sql = """
-        SELECT query_date FROM query_info WHERE query=?
-        """
-        return datetime.strptime(self._execute_query(sql, (query,)).fetchone()[0], "%Y-%m-%d %H:%M:%S.%f")

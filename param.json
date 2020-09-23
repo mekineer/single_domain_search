@@ -1,10 +1,10 @@
 {
-  "desired_count": 5,
-  "query": "PYTHON",
-  "batch_limit": 10,
+  "desired_count": 10,
+  "query": "kombucha",
+  "batch_limit": 30,
   "pause_delay": 100,
   "output_file": "output.txt",
-  "save_htmls": true,
+  "save_htmls": false,
   "page_delay": 10,
   "optional": {
     "min_date": "",
