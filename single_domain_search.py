@@ -177,6 +177,8 @@ if __name__ == '__main__':
     lang = optional_config.get('lang', '') or 'en'
 
     found_current_batch = 0
+    stats.processed = start_num
+    print("Current start_num:",start_num)
     try:
         while True:
             stop_num = start_num + limit_urls
