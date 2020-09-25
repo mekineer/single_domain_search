@@ -6,20 +6,22 @@ import os
 import time
 import urllib
 from pathlib import Path
+from sys import exit
 
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
+from datetime import datetime
 import requests
 from util import *
 
 logger = get_logger('cdn')
+
 LOGGER_LINE_NO = 0
 def custlog(line):
     global LOGGER_LINE_NO
     LOGGER_LINE_NO+=1
-    print(f"New logs added check line no {LOGGER_LINE_NO} in the logs")
     logger.debug(line)
 
 dbc = DBController()
@@ -123,9 +125,9 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
-    home_path,file_name_ = os.path.split(os.path.realpath(__file__))
-    chromedriver = os.path.join(home_path,'chromedriver')
-    driver = webdriver.Chrome(chromedriver,chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+                              options=chrome_options)
+
     extracted_urls = []
     try:
         custlog(f"processing url: {url}")
@@ -151,6 +153,8 @@ def process_url(url):
     driver.quit()
     return extracted_urls
 
+def check_staleness(last_date):	
+    return (datetime.now() -  last_date).days
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
@@ -175,6 +179,14 @@ if __name__ == '__main__':
     tld = optional_config.get('tld', '') or 'com'
     safe = optional_config.get('safe', '') or 'off'
     lang = optional_config.get('lang', '') or 'en'
+
+    dbc.add_query_info(query)	
+    #print( "date:",check_staleness(dbc.get_query_date(query)))	
+    if(check_staleness(dbc.get_query_date(query))==0):	
+        start_num = dbc.get_processed_count(query)	
+    else:	
+        start_num = 0	
+    stats.processed  = start_num
 
     found_current_batch = 0
     stats.processed = start_num
@@ -222,6 +234,8 @@ if __name__ == '__main__':
 
                 ext_urls = process_url(url)
                 dbc.add_visited_url(safe_url)
+                dbc.update_query_count(query,stats.processed)	
+                print("processed Urls count:",stats.processed)
 
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
