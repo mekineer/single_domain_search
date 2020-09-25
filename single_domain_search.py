@@ -12,14 +12,9 @@ from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
 import requests
+from util import *
 
-logger = logging.getLogger("cdn")
-logger.setLevel(logging.DEBUG)
-logging.basicConfig(
-    filemode="w",
-    filename="scdn.log",
-    format="[%(asctime)s][%(levelname)s]: %(message)s"
-)
+logger = get_logger('cdn')
 LOGGER_LINE_NO = 0
 def custlog(line):
     global LOGGER_LINE_NO
@@ -75,7 +70,7 @@ def checkRedirects(url):
     redirect_list = set()
     try:
         response = requests.get(url, allow_redirects=True)
-    except Exception as msg:
+    except Exception as e:
         custlog(f"Issue in url process need to check: {url}")
         custlog(f"ERROR {e}")
     else:
