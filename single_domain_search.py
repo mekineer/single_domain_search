@@ -32,17 +32,15 @@ def custlog(line):
 
 dbc = DBController()
 
-
 class Stats:
     processed = 0
 
-
 stats = Stats()
-
 
 class D2O:
     def __init__(self, **entries):
         self.__dict__.update(entries)
+
 
 # without TLD comparing just domain
 def matchDomain(original_url, urls):
@@ -52,7 +50,9 @@ def matchDomain(original_url, urls):
         sextract = tldextract.extract(u)
         sub_host = "{}.{}".format(sextract.domain, sextract.suffix)
         custlog(f"orig: {original_host}, sub: {sub_host}")
-        if extracted.domain != sextract.domain and sub_host not in white_list_domains:
+        if extracted.domain == sextract.domain or sub_host in white_list_domains:
+            continue
+        else:
             return False
 
     return True
@@ -75,7 +75,6 @@ def found_success(original_url, urls):
 
 #Keeping same domain redirects
 def checkRedirects(url):
-    # redirect_list = set()
     try:
         headers = {'user-agent': 'Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'}
         response = requests.get(url, allow_redirects=True, headers=headers)
@@ -85,28 +84,28 @@ def checkRedirects(url):
     else:
         if response.status_code==200:
             if len(response.history) != 0:
-                print("Request was redirected, so why checking internal redirects?")
-                custlog("Request was redirected, so why checking internal redirects?")
-                # for resp in response.history:
-                    # print(resp.status_code, resp.url)
-                    # redirect_list.add(resp.url)
-                    # custlog(f"from:>>   {url}    to:>>   {resp.url}")
-                # print("Final destination:",response.url)
-                # print(response.status_code, response.url)
-                return True
+                for resp in response.history:
+                    print(resp.status_code, resp.url)
+                    custlog(f"{resp.status_code} {resp.url}")
+                print(response.status_code, response.url)
+                print("Checking for same domain redirects")
+                custlog("Checking for same domain redirects")
+                return matchDomain(url,response.url)
             else:
-                # print('Request not redirected')
-                return False
+                return False  # Not Redirected
+        else:
+            return True  # Redirected to 404
+
 
 def find_urls(netjson):
     a = []
-    print('got ',len(netjson),' backend URLs')
-    for j,i in enumerate(netjson):
-        print('processed from current batch',j,' backend URLs from ',len(netjson), end="/r")
-        if "connectStart" in i:
+    print('got ',len(netjson),' backend items')
+    for i,k in enumerate(netjson):
+        print('processed from current batch',i,' backend items from ',len(netjson), end="\r")
+        if "connectStart" in k:
             try:
-                if checkRedirects(i["name"]):
-                    a.append(i["name"])
+                if matchDomain(k["name"]):
+                    a.append(k["name"])
             except:
                 pass
     return a
@@ -123,6 +122,7 @@ def get_src_urls(driver):
                 srcs.append(s)
     return srcs
 
+
 def process_url(url):
     # chrome
     chrome_options = webdriver.ChromeOptions()
@@ -137,7 +137,6 @@ def process_url(url):
         custlog(f"processing url: {url}")
         if not checkRedirects(url):
             driver.get(url)
-            time.sleep((5)*numpy.random.random())
             time.sleep(config_data.page_delay)
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
             net_stat = driver.execute_script(script_to_exec)
@@ -148,19 +147,22 @@ def process_url(url):
                     f.write(driver.page_source)
 
             extracted_urls = find_urls(net_stat)
+            print(extracted_urls)
             extracted_urls += get_src_urls(driver)
             extracted_urls = list(set(extracted_urls))
             custlog(f"extracted urls: {extracted_urls}")
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
         print(f"failed to process: {url}: e: {e}")
-
     driver.quit()
-    # print("the extracted urls: ",extracted_urls)
     return extracted_urls
+
 
 def check_staleness(last_date):	
     return (datetime.now() - last_date).days
+
+
+
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
@@ -209,9 +211,11 @@ if __name__ == '__main__':
 
     try:
         while True:
-            stop_num = start_num + batch_limit
-            params_all = {'start': start_num, 'stop': stop_num, **params_merge}
-            print('google search parameters: ',params_all)
+            # stop_num = start_num + batch_limit
+            quotient_start = (start_num // 10) * 10
+            stop_num = batch_limit
+            params_all = {'start': quotient_start, 'stop': stop_num, **params_merge}
+            print('\n\ngoogle search parameters: ',params_all)
             custlog(f"searching google with params: {params_all}")
             time.sleep((5)*numpy.random.random())
 
@@ -243,10 +247,10 @@ if __name__ == '__main__':
                 safe_url = urllib.parse.quote(url, safe='')
 
                 ext_urls = process_url(url)
-                print(ext_urls)
+                # print(ext_urls)  # all backend resource urls
                 dbc.add_visited_url(safe_url)
                 dbc.update_query_count(query,stats_processed)	
-                print("Total urls in database:",stats_processed,"\n\n\n")
+                print("Total urls in database:",stats_processed,"\n\n")
 
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
@@ -257,7 +261,7 @@ if __name__ == '__main__':
                         of.write(f"{url}\n")
                         of.flush()
 
-                    print(f"***************** FOUND URL: {url}")
+                    print(f"\n\n***************** FOUND URL: {url}")
                     if found_current_batch == desired_count:
                         print(f"Found desired count of urls: {desired_count}")
                         custlog(f"Found desired count of urls: {desired_count}")

@@ -1,9 +1,9 @@
 {
-  "query": "covid",
+  "query": "macos update sierra -site:apple.com",
   "desired_count": 10,
   "batch_limit": 10,
   "pause": 5,
-  "page_delay": 5,
+  "page_delay": 10,
   "output_file": "output.txt",
   "save_htmls": true,
   "optional": {
@@ -42,6 +42,10 @@
     "hearstapps.com",
     "highcharts.com",
     "paypal.com",
-    "paypalobjects.com"
+    "paypalobjects.com",
+    "gisservicemt.gov",
+    "creativecommons.org",
+    "licensebuttons.net",
+    "bootstrapcdn.com"
   ]
 }
