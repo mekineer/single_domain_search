@@ -1,7 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-'
 
-from imports import *
+import os
+import sys
+sys.path.extend(['/Library/Frameworks/Python.framework/Versions/3.8/lib/python38.zip', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/lib-dynload', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'])
+import numpy
+import logging
+from datetime import datetime
+import json
+import time
+import urllib
+from pathlib import Path
+
+# from requirements.txt
+import tldextract
+from googlesearch import search
+from selenium import webdriver, common
+from db_controller import DBController
+import requests
+
+# from util.py
 from util import *
 
 logger = get_logger('cdn')
@@ -57,35 +75,34 @@ def found_success(original_url, urls):
 
 #Keeping same domain redirects
 def checkRedirects(url):
-    redirect_list = set()
+    # redirect_list = set()
     try:
-        response = requests.get(url, allow_redirects=True)
+        headers = {'user-agent': 'Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'}
+        response = requests.get(url, allow_redirects=True, headers=headers)
     except Exception as e:
-        custlog(f"Issue in url process need to check: {url}")
+        custlog(f"Issue in checkRedirects with url: {url}")
         custlog(f"ERROR {e}")
     else:
         if response.status_code==200:
             if len(response.history) != 0:
-                print("\nRequest was redirected")
-                custlog("Request was redirected")
-                print("\nchecking for internal redirects")
-                custlog("checking for internal redirects")
-                print("\nchecking for internal redirects for detail can see logs")
-                for resp in response.history:
+                print("Request was redirected, so why checking internal redirects?")
+                custlog("Request was redirected, so why checking internal redirects?")
+                # for resp in response.history:
                     # print(resp.status_code, resp.url)
-                    redirect_list.add(resp.url)
-                    custlog(f"from:>>   {url}    to:>>   {resp.url}")
-                print("Final destination:",response.url)
+                    # redirect_list.add(resp.url)
+                    # custlog(f"from:>>   {url}    to:>>   {resp.url}")
+                # print("Final destination:",response.url)
                 # print(response.status_code, response.url)
-                return matchDomain(url,redirect_list)
-            else:
                 return True
+            else:
+                # print('Request not redirected')
+                return False
 
 def find_urls(netjson):
     a = []
     print('got ',len(netjson),' backend URLs')
     for j,i in enumerate(netjson):
-        print('processed from current batch',j,' backend URLs from ',len(netjson), end="\r")
+        print('processed from current batch',j,' backend URLs from ',len(netjson), end="/r")
         if "connectStart" in i:
             try:
                 if checkRedirects(i["name"]):
@@ -115,12 +132,12 @@ def process_url(url):
     chrome_options.add_argument("--enable-javascript")
     driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
                               options=chrome_options)
-
     extracted_urls = []
     try:
         custlog(f"processing url: {url}")
-        if checkRedirects(url):
+        if not checkRedirects(url):
             driver.get(url)
+            time.sleep((5)*numpy.random.random())
             time.sleep(config_data.page_delay)
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
             net_stat = driver.execute_script(script_to_exec)
@@ -139,6 +156,7 @@ def process_url(url):
         print(f"failed to process: {url}: e: {e}")
 
     driver.quit()
+    # print("the extracted urls: ",extracted_urls)
     return extracted_urls
 
 def check_staleness(last_date):	
@@ -151,59 +169,60 @@ if __name__ == '__main__':
     with open(CONFIG_PATH, "r") as cf:
         config_data = D2O(**json.loads(cf.read()))
 
-    limit_urls = config_data.batch_limit
+    params = {
+    'query' : config_data.query,
+    'pause' : config_data.pause,
+    'verify_ssl': False
+    }
+    # custlog(f"whitelist: {white_list_domains}")
+
+    optional_params = {
+    'min_date': config_data.optional.get('min_date', ''),
+    'max_date' : config_data.optional.get('max_date', ''),
+    'tld' : config_data.optional.get('tld', ''),
+    'safe' : config_data.optional.get('safe', ''),
+    'lang' : config_data.optional.get('lang', ''),
+    'country' : config_data.optional.get('country', '')
+    }
+
+    optional_params_stripped = {k: v for k, v in optional_params.items() if v is None or ''}
+    params_merge = {**params, **optional_params_stripped}
+
     query = config_data.query
-    pause_delay = config_data.pause_delay
-    desired_count = config_data.desired_count
-    output_path = config_data.output_file
+    desired_count = config_data.output_file
+    batch_limit = config_data.batch_limit
+    output_file = config_data.output_file
     white_list_domains = config_data.whitelist
-    custlog(f"whitelist: {white_list_domains}")
 
-    optional_config = config_data.optional
+    dbc.add_query_info(query)
+
     start_num = 0
-
-    cd_min = optional_config.get('min_date', '') or '1/1/1500'
-    cd_max = optional_config.get('max_date', '') or '1/1/3000'
-    tld = optional_config.get('tld', '') or 'com'
-    safe = optional_config.get('safe', '') or 'off'
-    lang = optional_config.get('lang', '') or 'en'
-
-    dbc.add_query_info(query)	
     #print( "date:",check_staleness(dbc.get_query_date(query)))	
     if(check_staleness(dbc.get_query_date(query))==0):	
         start_num = dbc.get_processed_count(query)	
     else:	
         start_num = 0	
-    stats.processed = start_num
-
+    
+    stats_processed = start_num
     found_current_batch = 0
-
     print("Current start_num:",start_num)
+
     try:
         while True:
-            stop_num = start_num + limit_urls
-            search_params = {
-                "num": limit_urls,
-                "start": start_num,
-                "stop": stop_num,
-                "pause": pause_delay,
-                "tbs": f"cdr:1,cd_min:{cd_min},cd_max:{cd_max}",
-                "tld": tld,
-                "lang": lang,
-                "safe": safe,
-                "country": optional_config.get('country', ''),
-                "verify_ssl": False,
-                "query": query
-            }
+            stop_num = start_num + batch_limit
+            params_all = {'start': start_num, 'stop': stop_num, **params_merge}
+            print('google search parameters: ',params_all)
+            custlog(f"searching google with params: {params_all}")
+            time.sleep((5)*numpy.random.random())
 
             search_urls = []
-            custlog(f"searching google with params: {search_params}")
-            time.sleep((5)*numpy.random.random())
-            for u in search(**search_params):
+            for u in search(**params_all):
+                print(u)
                 search_urls.append(u)
 
             print(f"Urls recieved from google: {len(search_urls)}")
             custlog(f"Urls recieved from google: {len(search_urls)}")
+            # print(search_urls)
 
             if len(search_urls) < 1:
                 print("No Urls recieved from google: Exiting")
@@ -218,23 +237,23 @@ if __name__ == '__main__':
             print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
 
-            start_num += limit_urls
             for url in new_urls:
-                stats.processed += 1
-                custlog(f"Total urls in database: {stats.processed}")
+                stats_processed += 1
+                custlog(f"Total urls in database: {stats_processed}")
                 safe_url = urllib.parse.quote(url, safe='')
 
                 ext_urls = process_url(url)
+                print(ext_urls)
                 dbc.add_visited_url(safe_url)
-                dbc.update_query_count(query,stats.processed)	
-                print("Total urls in database:",stats.processed,"\n")
+                dbc.update_query_count(query,stats_processed)	
+                print("Total urls in database:",stats_processed,"\n\n\n")
 
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
                     custlog(f"FOUND DESIRED URL: {url}")
 
-                    with open(output_path, 'a') as of:
+                    with open(output_file, 'a') as of:
                         of.write(f"{url}\n")
                         of.flush()
 
@@ -243,6 +262,9 @@ if __name__ == '__main__':
                         print(f"Found desired count of urls: {desired_count}")
                         custlog(f"Found desired count of urls: {desired_count}")
                         exit(0)
+
+            start_num += batch_limit
+
     except Exception as e:
         custlog(e)
         print(f"[ERROR] Something went wrong. Please check scdn.log. . . {e} Exiting")

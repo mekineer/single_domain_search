@@ -1,11 +1,11 @@
 {
+  "query": "covid",
   "desired_count": 10,
-  "query": "kombucha",
-  "batch_limit": 30,
-  "pause_delay": 100,
+  "batch_limit": 10,
+  "pause": 5,
+  "page_delay": 5,
   "output_file": "output.txt",
-  "save_htmls": false,
-  "page_delay": 10,
+  "save_htmls": true,
   "optional": {
     "min_date": "",
     "max_date": "",

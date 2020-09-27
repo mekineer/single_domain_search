@@ -1,5 +1,7 @@
 
-from imports import *
+from datetime import datetime
+import logging
+import os
 
 home_path,file_name_ = os.path.split(os.path.realpath(__file__))
 LOGFILE = os.path.join(home_path,str(datetime.now()).replace(' ','_')+'_scdn.log')
