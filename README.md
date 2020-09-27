@@ -59,8 +59,8 @@ OPTIONAL PARAMS:
 
 ## Running the script
 Next, you’ll need to run bash file. Follow these steps
-1. ```cd single_cdn```
-2. ```sh mac_run.sh```
+1. You'll need to specify the correct path within the single_domain_search.py and/or util.py?  Depending on your OS.
+2. In MacOS: sh mac_run.sh
 
 ## Output of script
 Following logs will be generated.
