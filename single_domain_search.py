@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-'
 
-from import import *
+from imports import *
 from util import *
 
 logger = get_logger('cdn')
