@@ -6,7 +6,10 @@ import os
 import time
 import urllib
 from pathlib import Path
-from sys import exit
+import sys
+
+sys.path.extend(['/Library/Frameworks/Python.framework/Versions/3.8/lib/python38.zip', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/lib-dynload', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'])
+import numpy
 
 import tldextract
 from googlesearch import search
@@ -77,7 +80,7 @@ def checkRedirects(url):
         custlog(f"ERROR {e}")
     else:
         if response.status_code==200:
-            if response.history:
+            if len(response.history) != 0:
                 print("\nRequest was redirected")
                 custlog("Request was redirected")
                 print("\nchecking for internal redirects")
@@ -154,7 +157,7 @@ def process_url(url):
     return extracted_urls
 
 def check_staleness(last_date):	
-    return (datetime.now() -  last_date).days
+    return (datetime.datetime.now() - last_date).days
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
@@ -186,10 +189,10 @@ if __name__ == '__main__':
         start_num = dbc.get_processed_count(query)	
     else:	
         start_num = 0	
-    stats.processed  = start_num
+    stats.processed = start_num
 
     found_current_batch = 0
-    stats.processed = start_num
+
     print("Current start_num:",start_num)
     try:
         while True:
@@ -210,32 +213,36 @@ if __name__ == '__main__':
 
             search_urls = []
             custlog(f"searching google with params: {search_params}")
+            time.sleep((5)*numpy.random.random())
             for u in search(**search_params):
                 search_urls.append(u)
-            print(f"All urls recieved from google: {len(search_urls)}")
-            custlog(f"All urls recieved from google: {len(search_urls)}")
+
+            print(f"Urls recieved from google: {len(search_urls)}")
+            custlog(f"Urls recieved from google: {len(search_urls)}")
+
+            if len(search_urls) < 1:
+                print("No Urls recieved from google: Exiting")
+                exit(1)
+
             new_urls = []
             for i in search_urls:
                 safe_url = urllib.parse.quote(i, safe='')
                 if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
-            print(f"new urls recieved from google: {len(new_urls)}")
-            custlog(f"new urls recieved from google: {len(new_urls)}")
-            if len(new_urls) < 1:
-                print("No new urls recieved: Exiting")
-                exit(1)
+            print(f"New urls not in database: {len(new_urls)}")
+            custlog(f"New urls not in database: {len(new_urls)}")
 
             start_num += limit_urls
             for url in new_urls:
                 stats.processed += 1
-                custlog(f"total urls processed till now: {stats.processed}")
+                custlog(f"Total urls in database: {stats.processed}")
                 safe_url = urllib.parse.quote(url, safe='')
 
                 ext_urls = process_url(url)
                 dbc.add_visited_url(safe_url)
                 dbc.update_query_count(query,stats.processed)	
-                print("processed Urls count:",stats.processed)
+                print("Total urls in database:",stats.processed,"\n")
 
                 if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
