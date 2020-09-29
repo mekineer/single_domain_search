@@ -42,10 +42,10 @@ class D2O:
 
 
 # without TLD comparing just domain
-def matchDomain(original_url, urls):
-    extracted = tldextract.extract(original_url)
+def matchDomain(new_url, resource_urls):
+    extracted = tldextract.extract(new_url)
     original_host = "{}.{}".format(extracted.domain, extracted.suffix)
-    for u in urls:
+    for u in resource_urls:
         sextract = tldextract.extract(u)
         sub_host = "{}.{}".format(sextract.domain, sextract.suffix)
         custlog(f"orig: {original_host}, sub: {sub_host}")
@@ -53,8 +53,8 @@ def matchDomain(original_url, urls):
             continue
         else:
             return False
-    if len(urls) < 1:
-        print('matchDomain urls is an empty list')
+    if len(resource_urls) < 1:
+        print('matchDomain resource_urls is an empty list')
         return True
     return True
 
@@ -115,7 +115,7 @@ def process_url(new_url):
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
                               options=chrome_options)
-    extracted_urls = []
+    resource_urls = []
     try:
         custlog(f"processing url: {new_url}")
         if not checkRedirects(new_url):
@@ -129,21 +129,21 @@ def process_url(new_url):
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
             print(new_url)
-            extracted_urls = find_urls(net_stat)
-            extracted_urls += get_src_urls(driver)
-            extracted_urls = list(set(extracted_urls))
-            custlog(f"extracted urls: {extracted_urls}")
+            resource_urls = find_urls(net_stat)
+            resource_urls += get_src_urls(driver)
+            resource_urls = list(set(resource_urls))
+            custlog(f"extracted urls: {resource_urls}")
         else:
             print(new_url)
-            extracted_urls = ['none.because.404']
-            return extracted_urls
+            resource_urls = ['none.because.404']
+            return resource_urls
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
         print(f"failed to process: {new_url}\nError {e}")
-        extracted_urls = ['none.because.selenium.error']
-        return extracted_urls
+        resource_urls = ['none.because.selenium.error']
+        return resource_urls
     driver.quit()
-    return extracted_urls
+    return resource_urls
 
 
 def check_staleness(last_date):	
@@ -235,12 +235,12 @@ if __name__ == '__main__':
                 dbc.add_visited_url(safe_url)
                 dbc.update_query_count(query,stats_processed)	
 
-                ext_urls = process_url(new_url)
+                resource_urls = process_url(new_url)
                 print("\nTotal urls in database:",stats_processed,"\n")
                 custlog(f"Total urls in database: {stats_processed}")
-                # print(ext_urls)  # all backend resource urls
+                # print(resource_urls)  # all backend resource urls
 
-                if matchDomain(new_url, ext_urls):  # if ext_urls and matchDomain(new_url, ext_urls):
+                if matchDomain(new_url, resource_urls):  # if resource_urls and matchDomain(new_url, resource_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
                     print(f"\n***************** FOUND URL: {new_url}\n")
