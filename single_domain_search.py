@@ -3,7 +3,6 @@
 
 import os
 import sys
-sys.path.extend(['/Library/Frameworks/Python.framework/Versions/3.8/lib/python38.zip', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/lib-dynload', '/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages'])
 import numpy
 import logging
 from datetime import datetime
@@ -54,54 +53,42 @@ def matchDomain(original_url, urls):
             continue
         else:
             return False
-    print('matchDomain urls is an empty list')
-    return True
-
-
-def found_success(original_url, urls):
-    return matchDomain(original_url, urls)
-    #preveius code is below
-    extracted = tldextract.extract(original_url)
-    original_host = "{}.{}".format(extracted.domain, extracted.suffix)
-    for u in urls:
-        sextract = tldextract.extract(u)
-        sub_host = "{}.{}".format(sextract.domain, sextract.suffix)
-        custlog(f"orig: {original_host}, sub: {sub_host}")
-        if original_host != sub_host and sub_host not in white_list_domains:
-            return False
-
+    if len(urls) < 1:
+        print('matchDomain urls is an empty list')
+        return True
     return True
 
 
 #Keeping same domain redirects
-def checkRedirects(url):
+def checkRedirects(new_url):
     try:
         headers = {'user-agent': 'Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'}
-        response = requests.get(url, allow_redirects=True, headers=headers)
+        response = requests.get(new_url, allow_redirects=True, headers=headers)
     except Exception as e:
-        custlog(f"Issue in checkRedirects with url: {url}")
+        custlog(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"ERROR {e}")
     else:
-        if response.status_code==200:
+        if 200 <= response.status_code <= 299:
             if len(response.history) != 0:
                 for resp in response.history:
                     print(resp.status_code, resp.url)
                     custlog(f"{resp.status_code} {resp.url}")
-                print(response.status_code, response.url)
-                print("Checking for same domain redirects\n\n")
-                custlog("Checking for same domain redirects")
-                return matchDomain(url,response.url)
+                extracted = tldextract.extract(new_url)
+                new_url_host = "{}.{}".format(extracted.domain, extracted.suffix)
+                sextract = tldextract.extract(response.url)
+                new_url_end_host = "{}.{}".format(sextract.domain, sextract.suffix)
+                if extracted.domain == sextract.domain:
+                    return False  # Not Redirected to different domain
             else:
                 return False  # Not Redirected
         else:
-            return True  # Redirected to 404
+            return True  # Redirected to 404 or error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 
 def find_urls(net_stat):
     a = []
-    print('got ',len(net_stat),' backend items')
     for i,k in enumerate(net_stat):
-        print('processed from current batch',i,' backend items from ',len(net_stat), end="\r")
+        print('processed from current batch',i,'backend items from',len(net_stat), end="\r")
         if "connectStart" in k:
                 a.append(k["name"])
     return a
@@ -119,8 +106,7 @@ def get_src_urls(driver):
     return srcs
 
 
-def process_url(url):
-    # chrome
+def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument('--headless')
@@ -131,25 +117,31 @@ def process_url(url):
                               options=chrome_options)
     extracted_urls = []
     try:
-        custlog(f"processing url: {url}")
-        if not checkRedirects(url):
-            driver.get(url)
-            time.sleep(config_data.page_delay)
+        custlog(f"processing url: {new_url}")
+        if not checkRedirects(new_url):
+            driver.get(new_url)
+            # time.sleep(config_data.page_delay)
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
             net_stat = driver.execute_script(script_to_exec)
             if config_data.save_htmls:
                 Path("htmls").mkdir(parents=True, exist_ok=True)
-                url_html_file = urllib.parse.quote(url, safe='')
+                url_html_file = urllib.parse.quote(new_url, safe='')
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
-
+            print(new_url)
             extracted_urls = find_urls(net_stat)
             extracted_urls += get_src_urls(driver)
             extracted_urls = list(set(extracted_urls))
             custlog(f"extracted urls: {extracted_urls}")
+        else:
+            print(new_url)
+            extracted_urls = ['none.because.404']
+            return extracted_urls
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
-        print(f"failed to process: {url}: e: {e}")
+        print(f"failed to process: {new_url}\nError {e}")
+        extracted_urls = ['none.because.selenium.error']
+        return extracted_urls
     driver.quit()
     return extracted_urls
 
@@ -191,11 +183,12 @@ if __name__ == '__main__':
     batch_limit = config_data.batch_limit
     output_file = config_data.output_file
     white_list_domains = config_data.whitelist
+    page_delay = config_data.page_delay
 
     dbc.add_query_info(query)
 
     start_num = 0
-    #print( "date:",check_staleness(dbc.get_query_date(query)))	
+    print("\nQuery in database is:",check_staleness(dbc.get_query_date(query)),"days old")	
     if(check_staleness(dbc.get_query_date(query))==0):	
         start_num = dbc.get_processed_count(query)	
     else:	
@@ -203,7 +196,7 @@ if __name__ == '__main__':
     
     stats_processed = start_num
     found_current_batch = 0
-    print("\nCurrent start_num:",start_num)
+    print("Current start_num:",start_num)
 
     try:
         while True:
@@ -213,7 +206,7 @@ if __name__ == '__main__':
             params_all = {'start': quotient_start, 'stop': stop_num, **params_merge}
             print('\ngoogle search parameters: ',params_all,'\n')
             custlog(f"searching google with params: {params_all}")
-            time.sleep((5)*numpy.random.random())
+            # time.sleep((5)*numpy.random.random()+page_delay)
 
             search_urls = []
             for u in search(**params_all):
@@ -222,9 +215,8 @@ if __name__ == '__main__':
 
             print(f"\nUrls recieved from google: {len(search_urls)}")
             custlog(f"Urls recieved from google: {len(search_urls)}")
-            # print(search_urls)
 
-            if len(search_urls) < 1:
+            if len(search_urls) == 0:
                 print("No Urls recieved from google: Exiting\n")
                 exit(1)
 
@@ -237,27 +229,27 @@ if __name__ == '__main__':
             print(f"New urls not in database: {len(new_urls)}\n")
             custlog(f"New urls not in database: {len(new_urls)}")
 
-            for url in new_urls:
+            for new_url in new_urls:
                 stats_processed += 1
-                custlog(f"Total urls in database: {stats_processed}")
-                safe_url = urllib.parse.quote(url, safe='')
-
-                ext_urls = process_url(url)
-                # print(ext_urls)  # all backend resource urls
+                safe_url = urllib.parse.quote(new_url, safe='')
                 dbc.add_visited_url(safe_url)
                 dbc.update_query_count(query,stats_processed)	
-                print("\nTotal urls in database:",stats_processed,"\n")
 
-                if found_success(url, ext_urls):  # if ext_urls and found_success(url, ext_urls):
+                ext_urls = process_url(new_url)
+                print("\nTotal urls in database:",stats_processed,"\n")
+                custlog(f"Total urls in database: {stats_processed}")
+                # print(ext_urls)  # all backend resource urls
+
+                if matchDomain(new_url, ext_urls):  # if ext_urls and matchDomain(new_url, ext_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
-                    custlog(f"FOUND DESIRED URL: {url}")
+                    print(f"\n***************** FOUND URL: {new_url}\n")
+                    custlog(f"FOUND DESIRED URL: {new_url}")
 
                     with open(output_file, 'a') as of:
-                        of.write(f"{url}\n")
+                        of.write(f"{new_url}\n")
                         of.flush()
 
-                    print(f"\n***************** FOUND URL: {url}\n")
                     if found_current_batch == desired_count:
                         print(f"Found desired count of urls: {desired_count}")
                         custlog(f"Found desired count of urls: {desired_count}")
