@@ -54,7 +54,7 @@ def matchDomain(original_url, urls):
             continue
         else:
             return False
-
+    print('matchDomain urls is an empty list')
     return True
 
 
@@ -88,7 +88,7 @@ def checkRedirects(url):
                     print(resp.status_code, resp.url)
                     custlog(f"{resp.status_code} {resp.url}")
                 print(response.status_code, response.url)
-                print("Checking for same domain redirects")
+                print("Checking for same domain redirects\n\n")
                 custlog("Checking for same domain redirects")
                 return matchDomain(url,response.url)
             else:
@@ -97,17 +97,13 @@ def checkRedirects(url):
             return True  # Redirected to 404
 
 
-def find_urls(netjson):
+def find_urls(net_stat):
     a = []
-    print('got ',len(netjson),' backend items')
-    for i,k in enumerate(netjson):
-        print('processed from current batch',i,' backend items from ',len(netjson), end="\r")
+    print('got ',len(net_stat),' backend items')
+    for i,k in enumerate(net_stat):
+        print('processed from current batch',i,' backend items from ',len(net_stat), end="\r")
         if "connectStart" in k:
-            try:
-                if matchDomain(k["name"]):
-                    a.append(k["name"])
-            except:
-                pass
+                a.append(k["name"])
     return a
 
 
@@ -130,6 +126,7 @@ def process_url(url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
                               options=chrome_options)
     extracted_urls = []
@@ -147,7 +144,6 @@ def process_url(url):
                     f.write(driver.page_source)
 
             extracted_urls = find_urls(net_stat)
-            print(extracted_urls)
             extracted_urls += get_src_urls(driver)
             extracted_urls = list(set(extracted_urls))
             custlog(f"extracted urls: {extracted_urls}")
@@ -207,7 +203,7 @@ if __name__ == '__main__':
     
     stats_processed = start_num
     found_current_batch = 0
-    print("Current start_num:",start_num)
+    print("\nCurrent start_num:",start_num)
 
     try:
         while True:
@@ -215,7 +211,7 @@ if __name__ == '__main__':
             quotient_start = (start_num // 10) * 10
             stop_num = batch_limit
             params_all = {'start': quotient_start, 'stop': stop_num, **params_merge}
-            print('\n\ngoogle search parameters: ',params_all)
+            print('\ngoogle search parameters: ',params_all,'\n')
             custlog(f"searching google with params: {params_all}")
             time.sleep((5)*numpy.random.random())
 
@@ -224,12 +220,12 @@ if __name__ == '__main__':
                 print(u)
                 search_urls.append(u)
 
-            print(f"Urls recieved from google: {len(search_urls)}")
+            print(f"\nUrls recieved from google: {len(search_urls)}")
             custlog(f"Urls recieved from google: {len(search_urls)}")
             # print(search_urls)
 
             if len(search_urls) < 1:
-                print("No Urls recieved from google: Exiting")
+                print("No Urls recieved from google: Exiting\n")
                 exit(1)
 
             new_urls = []
@@ -238,7 +234,7 @@ if __name__ == '__main__':
                 if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
-            print(f"New urls not in database: {len(new_urls)}")
+            print(f"New urls not in database: {len(new_urls)}\n")
             custlog(f"New urls not in database: {len(new_urls)}")
 
             for url in new_urls:
@@ -250,9 +246,9 @@ if __name__ == '__main__':
                 # print(ext_urls)  # all backend resource urls
                 dbc.add_visited_url(safe_url)
                 dbc.update_query_count(query,stats_processed)	
-                print("Total urls in database:",stats_processed,"\n\n")
+                print("\nTotal urls in database:",stats_processed,"\n")
 
-                if ext_urls and found_success(url, ext_urls):
+                if found_success(url, ext_urls):  # if ext_urls and found_success(url, ext_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
                     custlog(f"FOUND DESIRED URL: {url}")
@@ -261,7 +257,7 @@ if __name__ == '__main__':
                         of.write(f"{url}\n")
                         of.flush()
 
-                    print(f"\n\n***************** FOUND URL: {url}")
+                    print(f"\n***************** FOUND URL: {url}\n")
                     if found_current_batch == desired_count:
                         print(f"Found desired count of urls: {desired_count}")
                         custlog(f"Found desired count of urls: {desired_count}")
