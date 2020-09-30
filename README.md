@@ -14,6 +14,8 @@ I will be using uBlock Origin on medium mode, to see if a website uses another d
 ## Current Status
 Update: much improved!  Now at about 50%, but the remaining ones that did not filter 100% aren't trash sites, and there are none of the awful sites drawing resources for 10+ domains.
 
+Help is needed in selecting domains for the whitelist.  There haven't been sufficient results, so there is an attempt to add resource domains that individuals or small organizations might use in building their own website.
+
 <del>The current status of the development, is that the results returned are too often false positives.  As far as I understand, the false positives are because of 404 and redirection.  Sometimes a site listed in results draws from multiple domains.  There are also fake sites, who's sole purpose is to boost the SEO of a commercialized website.</del>  
 
 <del>I don't get sufficient results from Google in order to further test the script.  This is because Google "throttles" the rate of results delivered using this method.  I am forced to wait an hour or so, and restart the script.  When restarting the script with the same keywords, it starts from the very beginning, retrieving the same results, rather than asking Google to start at the Nth result.  Also, the script doesn't inform me of N, the number of Google search results it has processed for the given keyword search.</del>
