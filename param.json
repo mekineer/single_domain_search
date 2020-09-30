@@ -1,11 +1,11 @@
 {
-  "query": "macos update sierra -site:apple.com",
+  "query": "university site:*.edu",
   "desired_count": 10,
   "batch_limit": 10,
-  "pause": 5,
-  "page_delay": 10,
+  "pause": 10,
+  "page_delay": 5,
   "output_file": "output.txt",
-  "save_htmls": true,
+  "save_htmls": false,
   "optional": {
     "min_date": "",
     "max_date": "",
@@ -15,8 +15,8 @@
     "country": ""
   },
   "whitelist": [
-    "ssl.google-analytics.com",
-    "www.w3.org",
+    "google-analytics.com",
+    "w3.org",
     "jquery.com",
     "jsdelivr.net",
     "jwpcdn.com",
@@ -46,6 +46,20 @@
     "gisservicemt.gov",
     "creativecommons.org",
     "licensebuttons.net",
-    "bootstrapcdn.com"
+    "bootstrapcdn.com",
+    "sstatic.net",
+    "google.com",
+    "gstatic.com",
+    "squarespace-cdn.com",
+    "squarespace.com",
+    "vimeo.com",
+    "vimeocdn.com",
+    "newrelic.com",
+    "googletagmanager.com",
+    "readspeaker.com",
+    "gstatic.com",
+    "googleusercontent.com",
+    "typography.com",
+    "cloudflare.com"
   ]
 }
