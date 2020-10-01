@@ -9,6 +9,7 @@ from datetime import datetime
 import json
 import time
 import urllib
+import fileinput
 from pathlib import Path
 
 # from requirements.txt
@@ -49,7 +50,7 @@ def matchDomain(new_url, resource_urls):
         sextract = tldextract.extract(u)
         sub_host = "{}.{}".format(sextract.domain, sextract.suffix)
         custlog(f"orig: {original_host}, sub: {sub_host}")
-        if extracted.domain == sextract.domain or sub_host in white_list_domains:
+        if extracted.domain == sextract.domain or sub_host in whitelist_domains:
             continue
         else:
             return False
@@ -91,6 +92,7 @@ def find_urls(net_stat):
         print('processed from current batch',i,'backend items from',len(net_stat), end="\r")
         if "connectStart" in k:
                 a.append(k["name"])
+    print("")
     return a
 
 
@@ -156,15 +158,22 @@ if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
     custlog(f"loading config from path: {CONFIG_PATH}")
 
-    with open(CONFIG_PATH, "r") as cf:
+    with open(CONFIG_PATH, "r") as cf:  
         config_data = D2O(**json.loads(cf.read()))
+
+    query = config_data.query
+    desired_count = config_data.desired_count
+    batch_limit = config_data.batch_limit
+    output_file = config_data.output_file
+    whitelist_domains = config_data.whitelist
+    page_delay = config_data.page_delay
 
     params = {
     'query' : config_data.query,
     'pause' : config_data.pause,
     'verify_ssl': False
     }
-    # custlog(f"whitelist: {white_list_domains}")
+    # custlog(f"whitelist: {whitelist_domains}")
 
     optional_params = {
     'min_date': config_data.optional.get('min_date', ''),
@@ -178,22 +187,15 @@ if __name__ == '__main__':
     optional_params_stripped = {k: v for k, v in optional_params.items() if v is None or ''}
     params_merge = {**params, **optional_params_stripped}
 
-    query = config_data.query
-    desired_count = config_data.output_file
-    batch_limit = config_data.batch_limit
-    output_file = config_data.output_file
-    white_list_domains = config_data.whitelist
-    page_delay = config_data.page_delay
-
     dbc.add_query_info(query)
 
     start_num = 0
     print("\nQuery in database is:",check_staleness(dbc.get_query_date(query)),"days old")	
-    if(check_staleness(dbc.get_query_date(query))==0):	
+    if check_staleness(dbc.get_query_date(query)) == 0:	
         start_num = dbc.get_processed_count(query)	
     else:	
         start_num = 0	
-    
+ 
     stats_processed = start_num
     found_current_batch = 0
     print("Current start_num:",start_num)
@@ -204,9 +206,10 @@ if __name__ == '__main__':
             quotient_start = (start_num // 10) * 10
             stop_num = batch_limit
             params_all = {'start': quotient_start, 'stop': stop_num, **params_merge}
-            print('\ngoogle search parameters: ',params_all,'\n')
-            custlog(f"searching google with params: {params_all}")
             # time.sleep((5)*numpy.random.random()+page_delay)
+
+            print('\n\ngoogle search parameters: ',params_all,'\n')
+            custlog(f"searching google with params: {params_all}")
 
             search_urls = []
             for u in search(**params_all):
@@ -226,24 +229,27 @@ if __name__ == '__main__':
                 if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
-            print(f"New urls not in database: {len(new_urls)}\n")
+            print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
 
             for new_url in new_urls:
+
+                print("Total urls in database:",stats_processed,"\n")
+                custlog(f"Total urls in database: {stats_processed}\n")
+
                 stats_processed += 1
                 safe_url = urllib.parse.quote(new_url, safe='')
                 dbc.add_visited_url(safe_url)
-                dbc.update_query_count(query,stats_processed)	
+                dbc.update_query_count(query,stats_processed)
 
                 resource_urls = process_url(new_url)
-                print("\nTotal urls in database:",stats_processed,"\n")
-                custlog(f"Total urls in database: {stats_processed}")
                 # print(resource_urls)  # all backend resource urls
 
-                if matchDomain(new_url, resource_urls):  # if resource_urls and matchDomain(new_url, resource_urls):
+                if matchDomain(new_url, resource_urls):  # formerly: if resource_urls and matchDomain(new_url, resource_urls):
                     found_current_batch += 1
                     dbc.mark_url(safe_url, 1)
-                    print(f"\n***************** FOUND URL: {new_url}\n")
+
+                    print(f"***************** FOUND URL: {new_url}\n")
                     custlog(f"FOUND DESIRED URL: {new_url}")
 
                     with open(output_file, 'a') as of:
