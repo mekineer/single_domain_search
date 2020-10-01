@@ -11,7 +11,7 @@ import time
 import urllib
 import fileinput
 from pathlib import Path
-
+from bs4 import BeautifulSoup
 # from requirements.txt
 import tldextract
 from googlesearch import search
@@ -85,6 +85,36 @@ def checkRedirects(new_url):
         else:
             return True  # Redirected to 404 or error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
+def is_valid(url):
+    parsed = urllib.parse.urlparse(url)
+    return bool(parsed.netloc) and bool(parsed.scheme)
+
+def find_page_source_urls(driver):
+    print("i'm here")
+    external_urls = set()
+    urls = set()
+    url = driver.current_url
+    domain_name = urllib.parse.urlparse(url).netloc
+    print(domain_name)
+    html = driver.page_source
+    soup = BeautifulSoup(html,'html.parser')
+    for a_tag in soup.find_all("a",href=True):
+        href = a_tag.attrs.get("href")
+        if href == "" or href is None:
+            continue
+        href = urllib.parse.urljoin(url, href)
+        parsed_href = urllib.parse.urlparse(href)
+        href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+        if not is_valid(href):
+            continue
+        if href in urls:
+            continue
+        if domain_name not in href:
+            if href not in external_urls:
+                external_urls.add(href)
+            continue
+        urls.add(href)
+    return urls
 
 def find_urls(net_stat):
     a = []
@@ -98,7 +128,7 @@ def find_urls(net_stat):
 
 def get_src_urls(driver):
     srcs = []
-    tags = ['iframe', 'script']
+    tags = ['iframe', 'script','img','embed','audio','video','track','source']
     for t in tags:
         elems = driver.find_elements_by_tag_name(t)
         for e in elems:
@@ -115,7 +145,7 @@ def process_url(new_url):
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
-    driver = webdriver.Chrome(executable_path="util/mac_os/chromedriver",
+    driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
     resource_urls = []
     try:
@@ -133,6 +163,8 @@ def process_url(new_url):
             print(new_url)
             resource_urls = find_urls(net_stat)
             resource_urls += get_src_urls(driver)
+            resource_urls += find_page_source_urls(driver)
+
             resource_urls = list(set(resource_urls))
             custlog(f"extracted urls: {resource_urls}")
         else:
