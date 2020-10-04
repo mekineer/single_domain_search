@@ -11,15 +11,16 @@ import time
 import urllib
 import fileinput
 from pathlib import Path
-from bs4 import BeautifulSoup
-# from requirements.txt
+# from bs4 import BeautifulSoup # vikas
+
+# relating to requirements.txt
 import tldextract
 from googlesearch import search
 from selenium import webdriver, common
 from db_controller import DBController
 import requests
 
-# from util.py
+# relating to util.py
 from util import *
 
 logger = get_logger('cdn')
@@ -85,36 +86,36 @@ def checkRedirects(new_url):
         else:
             return True  # Redirected to 404 or error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
-def is_valid(url):
-    parsed = urllib.parse.urlparse(url)
-    return bool(parsed.netloc) and bool(parsed.scheme)
-
-def find_page_source_urls(driver):
-    print("i'm here")
-    external_urls = set()
-    urls = set()
-    url = driver.current_url
-    domain_name = urllib.parse.urlparse(url).netloc
-    print(domain_name)
-    html = driver.page_source
-    soup = BeautifulSoup(html,'html.parser')
-    for a_tag in soup.find_all("a",href=True):
-        href = a_tag.attrs.get("href")
-        if href == "" or href is None:
-            continue
-        href = urllib.parse.urljoin(url, href)
-        parsed_href = urllib.parse.urlparse(href)
-        href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
-        if not is_valid(href):
-            continue
-        if href in urls:
-            continue
-        if domain_name not in href:
-            if href not in external_urls:
-                external_urls.add(href)
-            continue
-        urls.add(href)
-    return urls
+# def is_valid(url):  # vikas
+#     parsed = urllib.parse.urlparse(url)
+#     return bool(parsed.netloc) and bool(parsed.scheme)
+# 
+# def find_page_source_urls(driver):  # vikas
+#     print("i'm here")
+#     external_urls = set()
+#     urls = set()
+#     url = driver.current_url
+#     domain_name = urllib.parse.urlparse(url).netloc
+#     print(domain_name)
+#     html = driver.page_source
+#     soup = BeautifulSoup(html,'html.parser')
+#     for a_tag in soup.find_all("a",href=True):
+#         href = a_tag.attrs.get("href")
+#         if href == "" or href is None:
+#             continue
+#         href = urllib.parse.urljoin(url, href)
+#         parsed_href = urllib.parse.urlparse(href)
+#         href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+#         if not is_valid(href):
+#             continue
+#         if href in urls:
+#             continue
+#         if domain_name not in href:
+#             if href not in external_urls:
+#                 external_urls.add(href)
+#             continue
+#         urls.add(href)
+#     return urls
 
 def find_urls(net_stat):
     a = []
@@ -128,7 +129,8 @@ def find_urls(net_stat):
 
 def get_src_urls(driver):
     srcs = []
-    tags = ['iframe', 'script','img','embed','audio','video','track','source']
+    tags = ['iframe', 'script']
+#   tags = ['iframe', 'script','img','embed','audio','video','track','source']
     for t in tags:
         elems = driver.find_elements_by_tag_name(t)
         for e in elems:
@@ -144,15 +146,17 @@ def process_url(new_url):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
     resource_urls = []
     try:
-        custlog(f"processing url: {new_url}")
         if not checkRedirects(new_url):
+            driver.implicitly_wait(page_delay)
             driver.get(new_url)
-            # time.sleep(config_data.page_delay)
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
             net_stat = driver.execute_script(script_to_exec)
             if config_data.save_htmls:
@@ -160,21 +164,23 @@ def process_url(new_url):
                 url_html_file = urllib.parse.quote(new_url, safe='')
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
+            custlog(f"processing url: {new_url}")
             print(new_url)
             resource_urls = find_urls(net_stat)
             resource_urls += get_src_urls(driver)
-            resource_urls += find_page_source_urls(driver)
-
+#           resource_urls += find_page_source_urls(driver)  # vikas
             resource_urls = list(set(resource_urls))
             custlog(f"extracted urls: {resource_urls}")
         else:
             print(new_url)
             resource_urls = ['none.because.404']
+            driver.quit()
             return resource_urls
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
         print(f"failed to process: {new_url}\nError {e}")
         resource_urls = ['none.because.selenium.error']
+        driver.quit()
         return resource_urls
     driver.quit()
     return resource_urls
@@ -198,14 +204,14 @@ if __name__ == '__main__':
     batch_limit = config_data.batch_limit
     output_file = config_data.output_file
     whitelist_domains = config_data.whitelist
+    pause_delay = config_data.pause_delay
     page_delay = config_data.page_delay
+    custlog(f"whitelist: {whitelist_domains}")
 
     params = {
     'query' : config_data.query,
-    'pause' : config_data.pause,
     'verify_ssl': False
     }
-    # custlog(f"whitelist: {whitelist_domains}")
 
     optional_params = {
     'min_date': config_data.optional.get('min_date', ''),
@@ -234,11 +240,11 @@ if __name__ == '__main__':
 
     try:
         while True:
-            # stop_num = start_num + batch_limit
+            # stop_num = start_num + batch_limit # turns out stop_num should be fixed
             quotient_start = (start_num // 10) * 10
             stop_num = batch_limit
-            params_all = {'start': quotient_start, 'stop': stop_num, **params_merge}
-            # time.sleep((5)*numpy.random.random()+page_delay)
+            pause = 5*numpy.random.random() + pause_delay
+            params_all = {'start': quotient_start, 'stop': stop_num, 'pause': pause, **params_merge}
 
             print('\n\ngoogle search parameters: ',params_all,'\n')
             custlog(f"searching google with params: {params_all}")
