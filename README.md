@@ -48,7 +48,8 @@ Before running the script you can update params as below,
 1. **output_csv**: path to output csv. This will append if file already exists.
 1. **whitelist**: Array of domains to be whitelisted.
 1. **save_htmls**: Boolean value, to save page sources in htmls directory.
-1. **page_delay**: Delay in seconds to wait for a page to load. Should be greater than 1.
+1. **page_delay**: Delay in seconds to wait for a page to load. Should be greater than 1.  Too low and you will see "Error Message: stale element reference: element is not attached to the page document" from call find_elements_by_tag_name()
+
 
 
 OPTIONAL PARAMS:
