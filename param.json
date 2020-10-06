@@ -1,8 +1,8 @@
 {
-  "query": "covid",
+  "query": "\"backpacking desk\" -inurl:pinterest -inurl:zipy -inurl:amazon -inurl:aliexpress",
   "desired_count": 10,
   "batch_limit": 10,
-  "pause_delay": 1,
+  "pause_delay": 5,
   "page_delay": 10,
   "output_file": "output.txt",
   "save_htmls": false,
