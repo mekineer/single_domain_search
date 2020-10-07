@@ -105,7 +105,7 @@ def get_src_urls(driver):
 #   print("")
 #   for i in srcs:
 #       print("  ",i)
-#   return srcs
+    return srcs
 
 
 def process_url(new_url):
