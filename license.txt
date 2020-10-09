@@ -1,7 +1,3 @@
-GNU GENERAL PUBLIC LICENSE V3.0
-https://www.gnu.org/licenses/gpl-3.0.html
-
-AND
-
-CC Attribution-Share Alike 3.0 Unported
-http://creativecommons.org/licenses/by-sa/3.0/
+CC = {CC Attribution-Share Alike 3.0 Unported}
+GNU = {GNU GENERAL PUBLIC LICENSE V3.0}
+License = {**CC,**GNU}
