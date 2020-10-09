@@ -11,6 +11,7 @@ import time
 import urllib
 import fileinput
 from pathlib import Path
+import warnings
 
 # relating to requirements.txt
 import tldextract
@@ -51,16 +52,21 @@ def matchDomain(new_url, resource_urls):
         if extracted.domain != sextract.domain and sub_host not in whitelist_domains:
             return False
     if len(resource_urls) < 1:
-        print('matchDomain resource_urls is an empty list')
+        print('matchDomain resource_urls is an empty list')  # Because 404. Even hello world site has one resource.
+        return False
     return True
 
 
-#Keeping same domain redirects
+# keeping same domain redirects
 def checkRedirects(new_url):
     try:
-        headers = {'user-agent': 'Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36'}
-        response = requests.get(new_url, allow_redirects=True, headers=headers)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            headers = {'referer': 'https://www.google.com/','user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36'}
+            response = requests.get(new_url, allow_redirects=True, verify=False, headers=headers)
+#       print("\nresponse.headers:",response.headers,"\n")
     except Exception as e:
+        print(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"ERROR {e}")
     else:
@@ -86,9 +92,12 @@ def is_valid(url):  # vikas
 
 def find_urls(net_stat):
     a = []
-    for i in net_stat:
-        if "connectStart" in i:
-            a.append(i["name"])
+    len_net_stat = len(net_stat)
+    for i,k in enumerate(net_stat):
+        print('processed from current batch',i,'backend items from',len(net_stat), end="\r")
+        if "connectStart" in k:
+                a.append(k["name"])
+    print("")
     return a
 
 
@@ -117,7 +126,8 @@ def process_url(new_url):
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--allow-running-insecure-content")
     chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
+#   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
     driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
     resource_urls = []
@@ -125,6 +135,10 @@ def process_url(new_url):
         if not checkRedirects(new_url):
             driver.implicitly_wait(page_delay)
             driver.get(new_url)
+            html = driver.page_source
+            if len(html) == 0:
+                print("Empty html, likely browser will not display because \"Not Secure\"")
+                return resource_urls
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
             net_stat = driver.execute_script(script_to_exec)
             if config_data.save_htmls:
@@ -138,7 +152,8 @@ def process_url(new_url):
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
-        print(f"failed to process: {new_url}\nError {e}")
+        print("Processing error",{e},end="\r")
+        print("")
     driver.quit()
     return resource_urls
 
@@ -186,7 +201,8 @@ if __name__ == '__main__':
     optional_params_stripped = {k: v for k, v in optional_params.items() if v is None or ''}
     params_merge = { 'stop': stop_num, 'user_agent': user_agent, **params, **optional_params_stripped}
 
-    found_current_batch = 0
+    filtered_results = 0
+    session_total = 0    
     dbc.add_query_info(query)
     stats_processed = dbc.get_processed_count(query)
     query_age = check_staleness(dbc.get_query_date(query))
@@ -195,6 +211,7 @@ if __name__ == '__main__':
         start_num = (stats_processed // 10) * 10	
     else:	
         start_num = 0
+    start_num = 80
 
     try:
         while True:
@@ -210,8 +227,12 @@ if __name__ == '__main__':
                 print(u)
                 search_urls.append(u)
 
-            print(f"\nUrls recieved from google: {len(search_urls)}")
-            custlog(f"Urls recieved from google: {len(search_urls)}")
+            search_urls_count = len(search_urls)
+            session_total = session_total + search_urls_count
+
+            print(f"\nUrls recieved from google: {search_urls_count}")
+            custlog(f"Urls recieved from google: {search_urls_count}")
+            print(f"Total Urls recieved this session: {session_total}")
 
             new_urls = []
             for i in search_urls:
@@ -239,22 +260,22 @@ if __name__ == '__main__':
                 # print(resource_urls)  # all backend resource urls
 
                 if matchDomain(new_url, resource_urls):  # formerly: if resource_urls and matchDomain(new_url, resource_urls):
-                    found_current_batch += 1
+                    filtered_results += 1
                     dbc.mark_url(safe_url, 1)
 
-                    print(f"***************** FOUND URL: {new_url}\n")
+                    print(f"***************** FOUND URL: {new_url}")
                     custlog(f"FOUND DESIRED URL: {new_url}")
 
                     with open(output_file, 'a') as of:
                         of.write(f"{new_url}\n")
                         of.flush()
 
-                    if found_current_batch == desired_count:
+                    if filtered_results == desired_count:
                         print(f"Found desired count of urls: {desired_count}")
                         custlog(f"Found desired count of urls: {desired_count}")
                         exit(0)
 
-            if len(search_urls) < batch_limit:
+            if search_urls_count < batch_limit:
                 print("Google results exhausted: Exiting\n")
                 exit(1)
 
