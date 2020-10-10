@@ -92,19 +92,17 @@ def is_valid(url):  # vikas
 
 def find_urls(net_stat):
     a = []
-    len_net_stat = len(net_stat)
-    for i,k in enumerate(net_stat):
-        print('processed from current batch',i,'backend items from',len(net_stat), end="\r")
-        if "connectStart" in k:
-                a.append(k["name"])
-    print("")
+    print('Number of backend items:',len(net_stat))
+    for i in net_stat:
+        if "connectStart" in i:
+            a.append(i["name"])
     return a
 
 
 def get_src_urls(driver):
     srcs = []
 #   tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
-    tags = ['iframe', 'script','embed']
+    tags = ['iframe', 'script', 'embed']
     for t in tags:
         elems = driver.find_elements_by_tag_name(t)
         for e in elems:
@@ -119,11 +117,16 @@ def get_src_urls(driver):
 
 def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
+
     chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
+    chrome_options.add_argument("--disable-web-security")
     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--safebrowsing-disable-download-protection")
+    chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
     chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
 #   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
@@ -136,7 +139,7 @@ def process_url(new_url):
             driver.implicitly_wait(page_delay)
             driver.get(new_url)
             html = driver.page_source
-            if len(html) == 0:
+            if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
                 return resource_urls
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
@@ -211,7 +214,7 @@ if __name__ == '__main__':
         start_num = (stats_processed // 10) * 10	
     else:	
         start_num = 0
-    start_num = 80
+#   start_num = 80
 
     try:
         while True:
