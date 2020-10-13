@@ -47,7 +47,8 @@ class DBController:
         logger.debug("creating url table if not exist.")
         sql_visited_urls = """
         CREATE TABLE IF NOT EXISTS visited_urls (
-            url text PRIMARY KEY,
+            id INTEGER NOT NULL PRIMARY KEY,
+            url text ,
             begin_date text NOT NULL,
             mark INTEGER DEFAULT 0
         );
@@ -55,12 +56,20 @@ class DBController:
         self._execute_query(sql_visited_urls)	
         sql_query_Info = """	
         CREATE TABLE IF NOT EXISTS query_Info (	
-            query text PRIMARY KEY,	
+            id INTEGER NOT NULL PRIMARY KEY,
+            query text ,	
             query_date DATE,	
             processed_count INTEGER DEFAULT 0	
         );	
         """	
         self._execute_query(sql_query_Info)
+        sql_resource_urls = """	
+        CREATE TABLE IF NOT EXISTS resource_urls (	
+            url_id INTEGER NOT NULL,	
+            resource_url text	
+        );	
+        """	
+        self._execute_query(sql_resource_urls)
 
     def mark_url(self, url, mark=1):
         logger.debug(f"marking: {mark}, url: {url}")
