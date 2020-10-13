@@ -20,10 +20,11 @@ from selenium import common
 from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
 import requests
+from ublock import UblockProcessUrl
 
 # relating to util.py
 from util import *
-
+ubdriver = UblockProcessUrl()
 logger = get_logger('cdn')
 
 LOGGER_LINE_NO = 0
@@ -130,9 +131,7 @@ def get_src_urls(driver):
 #       print("  ",i)
     return srcs
 
-
 def process_url(new_url):
-
     chrome_options = webdriver.ChromeOptions()
 #   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
     chrome_options.add_argument("--ignore-certificate-errors")
@@ -171,6 +170,7 @@ def process_url(new_url):
                     f.write(driver.page_source)
             resource_urls = find_urls(net_stat)
             resource_urls += get_src_urls(driver)
+            resource_urls += ubdriver.UblockProcessUrl(new_url)
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
