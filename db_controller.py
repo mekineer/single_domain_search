@@ -59,8 +59,9 @@ class DBController:
             id INTEGER NOT NULL PRIMARY KEY,
             query text ,	
             query_date DATE,	
-            processed_count INTEGER DEFAULT 0	
-        );	
+            processed_count INTEGER DEFAULT 0,
+            total_count INTEGER DEFAULT 0
+            );	
         """	
         self._execute_query(sql_query_Info)
         sql_resource_urls = """	
@@ -70,6 +71,16 @@ class DBController:
         );	
         """	
         self._execute_query(sql_resource_urls)
+        
+        sql_rank_urls = """	
+        CREATE TABLE IF NOT EXISTS rank_urls (	
+            rank_url_id INTEGER NOT NULL,
+            against_query_id INTEGER NOT NULL,
+            rank INTEGER NOT NULL,
+            rank_date DATE
+            );	
+        """	
+        self._execute_query(sql_rank_urls)
 
     def mark_url(self, url, mark=1):
         logger.debug(f"marking: {mark}, url: {url}")
