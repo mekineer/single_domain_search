@@ -98,7 +98,6 @@ Thumbs.db
 *.rar
 *.tar
 *.zip
-*.html
 # ignore private/secret files
 *.der
 *.key
