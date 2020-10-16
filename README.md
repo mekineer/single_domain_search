@@ -3,7 +3,7 @@ Websites increasingly draw resources from multiple domains.  One example is that
 So where can you search to find a non-marketed web?  You can find it in simplicity: those sites using only a single domain for their resources.  On occasion, these sites may draw resources from other domains, but only to add valuable content, such as an inline youtube video: these resource domains are allowed in a whitelist.  Another reason, for example, is that the site may have a "donate" button from paypal.  The whitelist can be edited, enabled or disabled by the user.
 
 ## Please Develop This Project
-Can always use more help.  The current work was done by Gohar Fatima, Abubakar Siddique, and Vikas Kumar through Upwork, and by Mekineer.  The project description posted on Upwork was the following:
+Can always use more help.  The current work was done by Gohar Fatima, Abubakar Siddique, Priyankush Salouria, and Vikas Kumar through Upwork, and by Mekineer.  The project description posted on Upwork was the following:
 
 ## Original Project Description
 Browse a non-corporate web, for websites where all content is delivered by a single domain.
