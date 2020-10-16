@@ -123,9 +123,10 @@ def get_src_urls(driver):
     for t in tags:
         elems = driver.find_elements_by_tag_name(t)
         for e in elems:
-            s = e.get_attribute("src")
-            if s and s != "" and is_valid(s):
-                srcs.append(s)
+            if e:
+                s = e.get_attribute("src")
+                if s and s != "" and is_valid(s):
+                    srcs.append(s)
 #   print("")
 #   for i in srcs:
 #       print("  ",i)
@@ -133,14 +134,15 @@ def get_src_urls(driver):
 
 def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
-#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
+    chrome_options.add_argument("--load-extension=1.30.2_0")
+# #   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
     chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument('--headless')
+# #   chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
     chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
     chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--disable-extensions")
+#     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--safebrowsing-disable-download-protection")
     chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
@@ -170,7 +172,7 @@ def process_url(new_url):
                     f.write(driver.page_source)
             resource_urls = find_urls(net_stat)
             resource_urls += get_src_urls(driver)
-            resource_urls += ubdriver.UblockProcessUrl(new_url)
+            resource_urls += ubdriver.UblockProcessUrl(driver,new_url)
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
@@ -183,11 +185,6 @@ def process_url(new_url):
 
 def check_staleness(last_date):	
     return (datetime.now() - last_date).days
-
-
-
-
-
 
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
