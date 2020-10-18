@@ -12,19 +12,17 @@ import urllib
 import fileinput
 from pathlib import Path
 import warnings
-
-# relating to requirements.txt
 import tldextract
 from googlesearch import search
 from selenium import common
+from selenium.webdriver.common.action_chains import ActionChains
 from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
-import requests
-from ublock import UblockProcessUrl
-
-# relating to util.py
+import requests  # also https://pypi.org/project/selenium-wire/
 from util import *
-ubdriver = UblockProcessUrl()
+# from pyvirtualdisplay import Display
+# from xvfbwrapper import Xvfb
+
 logger = get_logger('cdn')
 
 LOGGER_LINE_NO = 0
@@ -54,6 +52,7 @@ def found_success(new_url):
     if filtered_results == desired_count:
         print(f"Found desired count of urls: {desired_count}")
         custlog(f"Found desired count of urls: {desired_count}")
+        driver.quit()
         exit(0)
 
 
@@ -72,6 +71,37 @@ def whitelist_filter(new_url, resource_urls):
     return True
 
 
+def load_browser():
+    global driver
+    global ublock_guid
+    chrome_options = webdriver.ChromeOptions()
+#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
+#   chrome_options.add_argument("--disable-web-security")  # messes up ublock
+#   chrome_options.add_argument('--headless')
+    chrome_options.add_extension('ubo_1_30_4_0.crx')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument("--ignore-certificate-errors")
+    chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
+    chrome_options.add_argument("--safebrowsing-disable-download-protection")
+    chrome_options.add_argument("--disable-domain-reliability")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
+    driver = webdriver.Chrome(executable_path="./chromedriver",
+                              options=chrome_options)
+    driver.header_overrides = {'Referer': 'com.google.android.gm'}
+#   display = Display(visible=0, backend="xephyr", size=(800, 600))
+#   display.start()
+    extension_uri = "chrome-extension://cjpalhdlnbpafiamejdnhcphjbkeiagm/logger-ui.html?popup=1#_"
+    driver.implicitly_wait(page_delay)
+    driver.get(extension_uri)
+    ublock_guid = driver.current_window_handle
+#    driver.execute_script('window.open("")')
+#    time.sleep(5)
+#    driver.switch_to.window(driver.window_handles[1])
+
+
 # keeping same domain redirects
 def checkRedirects(new_url):
     try:
@@ -84,6 +114,7 @@ def checkRedirects(new_url):
         print(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"ERROR {e}")
+        driver.quit()
     else:
         if 200 <= response.status_code <= 299:
             if response.history:
@@ -116,7 +147,7 @@ def find_urls(net_stat):
     return a
 
 
-def get_src_urls(driver):
+def get_src_urls():
     srcs = []
 #   tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
     tags = ['iframe', 'script', 'embed']
@@ -131,32 +162,48 @@ def get_src_urls(driver):
 #       print("  ",i)
     return srcs
 
+
+def ublock_process_url():
+    try:
+        driver.switch_to.window(ublock_guid)
+        time.sleep(0.4)
+        driver.find_element_by_css_selector('#loggerExport').click()
+        time.sleep(0.4)
+        data = driver.find_element_by_css_selector("#loggerExportDialog > textarea").get_attribute('value')
+#       ActionChains(driver).click(clear).perform()
+        time.sleep(0.4)
+        driver.find_element_by_css_selector('#modalOverlayClose').click()
+        time.sleep(0.4)
+        driver.find_element_by_css_selector('#clear').click()
+        time.sleep(0.4)
+        driver.switch_to.window(driver.window_handles[1])
+        time.sleep(0.4)
+#        driver.execute_script("window.close()")
+        driver.close()
+        time.sleep(0.4)
+    except Exception as msg:
+        print(msg)
+        data = ''
+    data = data.splitlines()
+    urlsy = set()
+    for i in data:
+        if i.startswith("http"):
+            urlsy.add(i.strip())
+    return list(urlsy)
+
+
 def process_url(new_url):
-    chrome_options = webdriver.ChromeOptions()
-#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument("--enable-javascript")
-    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--disable-extensions")
-    chrome_options.add_argument("--safebrowsing-disable-download-protection")
-    chrome_options.add_argument("--disable-domain-reliability")
-    chrome_options.add_argument("--allow-running-insecure-content")
-    chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
-#   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
-    driver = webdriver.Chrome(executable_path="./chromedriver",
-                              options=chrome_options)
-    driver.header_overrides = {
-    'Referer': 'com.google.android.gm',
-    }
     resource_urls = []
     try:
         if not checkRedirects(new_url):
-            driver.implicitly_wait(page_delay)
-            driver.get(new_url)
+            driver.switch_to.window(ublock_guid)
+            clear = driver.find_element_by_id('clear')
+#            try:
+            ActionChains(driver).click(clear).perform()
+#            except:
+#                driver.find_element_by_css_selector('#clear').click()
+            script = 'window.open("{}", "new_window")'.format(new_url)
+            driver.execute_script(script)
             html = driver.page_source
             if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
@@ -169,15 +216,16 @@ def process_url(new_url):
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
             resource_urls = find_urls(net_stat)
-            resource_urls += get_src_urls(driver)
-            resource_urls += ubdriver.UblockProcessUrl(new_url)
+            resource_urls += get_src_urls()
+            resource_urls += ublock_process_url()
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
         custlog(f"ERROR {e}")
         print("Processing error",{e},end="\r")
         print("")
-    driver.quit()
+        driver.quit()
+#   driver.quit()
     return resource_urls
 
 
@@ -238,7 +286,8 @@ if __name__ == '__main__':
 
     try:
         while True:
-            # stop_num = start_num + batch_limit # turns out stop_num should be fixed
+            if session_total == 0:
+                load_browser()
             pause = 5*numpy.random.random() + pause_delay
             params_all = {'start': start_num, 'pause': pause, **params_merge}
 
@@ -253,18 +302,18 @@ if __name__ == '__main__':
             search_urls_count = len(search_urls)
             session_total = session_total + search_urls_count
 
-            print(f"\nUrls recieved from google: {search_urls_count}")
-            custlog(f"Urls recieved from google: {search_urls_count}")
-
             new_urls = []
             for i in search_urls:
                 safe_url = urllib.parse.quote(i, safe='')
                 if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
+            print(f"\nUrls recieved from google: {search_urls_count}")
+            custlog(f"Urls recieved from google: {search_urls_count}")
             print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
-            print(f"Total Urls recieved this session: {session_total}")
+            print(f"Urls recieved this session: {session_total}")
+            print(f"Urls processed for this query: {stats_processed}")
 
             for search_url in search_urls:
 
@@ -275,11 +324,10 @@ if __name__ == '__main__':
                     dbc.add_visited_url(safe_url)
                     dbc.update_query_count(query,stats_processed)
 
-                    print("\nProcessing new url:", search_url)
+                    print(f"\n{search_url}")
                     custlog(f"processing url: {search_url}")
 
                     resource_urls = process_url(search_url)
-                    # print(resource_urls)  # all backend resource urls
 
                     if whitelist_filter(search_url, resource_urls):  # formerly: if resource_urls and whitelist_filter(new_url, resource_urls):
                         filtered_results += 1
@@ -295,6 +343,7 @@ if __name__ == '__main__':
 
             if search_urls_count < batch_limit:
                 print("Google results exhausted: Exiting\n")
+                driver.quit()
                 exit(1)
 
             start_num += batch_limit
@@ -302,3 +351,4 @@ if __name__ == '__main__':
     except Exception as e:
         custlog(e)
         print(f"[ERROR] Something went wrong. Please check scdn.log. . . {e} Exiting")
+        driver.quit()
