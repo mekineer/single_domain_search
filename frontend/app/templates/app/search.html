@@ -27,9 +27,11 @@ body {
 <div class="search-container">
   <br><br><center>
     <form action="{% url 'app:search' %}" method="post"> {% csrf_token %}
+      <!-- search bar-->
       <input type="text" placeholder="Search.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button><br><br>
-       <input type="checkbox" id="cb1" name="cb1" value="cb1">
+      <!-- checkboxes -->
+      <input type="checkbox" id="cb1" name="cb1" value="cb1">
       <label for="cb1"> Checkbox1 </label><br>
       <input type="checkbox" id="cb2" name="cb2" value="cb2">
       <label for="cb2"> Checkbox2 </label><br>
