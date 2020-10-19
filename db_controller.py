@@ -190,6 +190,14 @@ class DBController:
                 """	
         return self._execute_query(sql, (url_id, resource_url)).lastrowid	
     
+    def add_rank_of_url(self,url,query,rank):
+        url_id = self.get_url_id(url)
+        query_id = self.get_url_id(query)
+        sql = """	
+                INSERT INTO rank_urls (rank_url_id,against_query_id,rank,rank_date)	
+                VALUES(?, ?,?,?);	
+                """	
+        return self._execute_query(sql, (url_id, query_id,rank,datetime.now())).lastrowid
    
     
    
