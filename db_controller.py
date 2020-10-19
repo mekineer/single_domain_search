@@ -49,7 +49,7 @@ class DBController:
         CREATE TABLE IF NOT EXISTS visited_urls (
             id INTEGER NOT NULL PRIMARY KEY,
             url text ,
-            begin_date text NOT NULL,
+            processed_date text NOT NULL,
             mark INTEGER DEFAULT 0
         );
         """
@@ -100,7 +100,7 @@ class DBController:
             return
         logger.debug(f"inserting in db url: {url}")
         sql = """
-            INSERT INTO visited_urls (url,begin_date)
+            INSERT INTO visited_urls (url,processed_date)
             VALUES(?, ?);
         """
         return self._execute_query(sql, (url, datetime.now())).lastrowid	
