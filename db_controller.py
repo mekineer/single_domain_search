@@ -198,6 +198,14 @@ class DBController:
                 VALUES(?, ?,?,?);	
                 """	
         return self._execute_query(sql, (url_id, query_id,rank,datetime.now())).lastrowid
+    
+    def get_rank_of_url(self,url,query):
+        url_id = self.get_url_id(url)
+        query_id = self.get_url_id(query)
+        sql = """	
+                 SELECT rank from rank_urls WHERE url_id=? AND query_id=?
+                 """	
+        return self._execute_query(sql, (url_id,query_id,))
    
     
    
