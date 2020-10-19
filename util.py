@@ -4,7 +4,7 @@ import logging
 import os
 
 home_path,file_name_ = os.path.split(os.path.realpath(__file__))
-LOGFILE = os.path.join('scdn.log')
+LOGFILE = os.path.join(home_path,str(datetime.now()).replace(' ','_')+'_scdn.log')
 
 def get_logger(logger_name, level=logging.DEBUG):
     logger = logging.getLogger(logger_name)

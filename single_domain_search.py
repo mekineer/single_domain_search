@@ -128,7 +128,7 @@ def process_url(new_url):
     chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
 #   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
-    driver = webdriver.Chrome(executable_path="E:\Github\single_domain_search\chromedriver_win32\chromedriver.exe",
+    driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
     resource_urls = []
     try:
