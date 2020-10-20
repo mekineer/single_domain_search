@@ -24,7 +24,6 @@ from util import *
 # from xvfbwrapper import Xvfb
 
 logger = get_logger('cdn')
-
 LOGGER_LINE_NO = 0
 def custlog(line):
     global LOGGER_LINE_NO
@@ -32,11 +31,6 @@ def custlog(line):
     logger.debug(line)
 
 dbc = DBController()
-
-class Stats:
-    processed = 0
-
-stats = Stats()
 
 class D2O:
     def __init__(self, **entries):
@@ -79,6 +73,7 @@ def load_browser():
 #   chrome_options.add_argument("--disable-web-security")  # messes up ublock
 #   chrome_options.add_argument('--headless')
     chrome_options.add_extension('ubo_1_30_4_0.crx')
+    chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("--enable-javascript")
