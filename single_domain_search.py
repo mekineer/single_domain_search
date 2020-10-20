@@ -16,13 +16,15 @@ import warnings
 # relating to requirements.txt
 import tldextract
 from googlesearch import search
-from selenium import webdriver, common
+from selenium import common
+from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
 import requests
+from ublock import UblockProcessUrl
 
 # relating to util.py
 from util import *
-
+ubdriver = UblockProcessUrl()
 logger = get_logger('cdn')
 
 LOGGER_LINE_NO = 0
@@ -43,16 +45,29 @@ class D2O:
         self.__dict__.update(entries)
 
 
-# without TLD comparing just domain
-def matchDomain(new_url, resource_urls):
-    extracted = tldextract.extract(new_url)
+def found_success(new_url):
+    print(f"***************** FOUND URL: {new_url}")
+    custlog(f"FOUND DESIRED URL: {new_url}")
+    with open(output_file, 'a') as of:
+        of.write(f"{new_url}\n")
+        of.flush()
+    if filtered_results == desired_count:
+        print(f"Found desired count of urls: {desired_count}")
+        custlog(f"Found desired count of urls: {desired_count}")
+        exit(0)
+
+
+# without TLD comparing just domain  # https://raventools.com/marketing-glossary/top-level-domain/
+def whitelist_filter(new_url, resource_urls):
+    host = tldextract.extract(new_url)
     for u in resource_urls:
-        sextract = tldextract.extract(u)
-        sub_host = "{}.{}".format(sextract.domain, sextract.suffix)
-        if extracted.domain != sextract.domain and sub_host not in whitelist_domains:
+        sub_host = tldextract.extract(u)
+        sub_host_format = "{}.{}".format(sub_host.domain, sub_host.suffix)
+        if host.domain != sub_host.domain and sub_host_format not in whitelist_domains:
+            print("Resource domains do not match host")
             return False
     if len(resource_urls) < 1:
-        print('matchDomain resource_urls is an empty list')  # Because 404. Even hello world site has one resource.
+        print('whitelist_filter resource_urls is an empty list')  # Because 404. Even hello world site has one resource.
         return False
     return True
 
@@ -62,7 +77,7 @@ def checkRedirects(new_url):
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            headers = {'referer': 'https://www.google.com/','user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36'}
+            headers = {'referer': 'com.google.android.gm','user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36'}
             response = requests.get(new_url, allow_redirects=True, verify=False, headers=headers)
 #       print("\nresponse.headers:",response.headers,"\n")
     except Exception as e:
@@ -71,17 +86,19 @@ def checkRedirects(new_url):
         custlog(f"ERROR {e}")
     else:
         if 200 <= response.status_code <= 299:
-            if len(response.history) != 0:
+            if response.history:
                 for resp in response.history:
                     print(resp.status_code, resp.url)
                     custlog(f"{resp.status_code} {resp.url}")
-                extracted = tldextract.extract(new_url)
-                sextract = tldextract.extract(response.url)
-                if extracted.domain == sextract.domain:
+                print(response.status_code, response.url)
+                host = tldextract.extract(new_url)
+                landing = tldextract.extract(response.url)
+                if host.domain == landing.domain:
                     return False  # Not Redirected to different domain
             else:
                 return False  # Not Redirected
         else:
+            print("Redirected")
             return True  # Redirected to 404 or error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 
@@ -92,19 +109,17 @@ def is_valid(url):  # vikas
 
 def find_urls(net_stat):
     a = []
-    len_net_stat = len(net_stat)
-    for i,k in enumerate(net_stat):
-        print('processed from current batch',i,'backend items from',len(net_stat), end="\r")
-        if "connectStart" in k:
-                a.append(k["name"])
-    print("")
+    print('Number of backend items:',len(net_stat))
+    for i in net_stat:
+        if "connectStart" in i:
+            a.append(i["name"])
     return a
 
 
 def get_src_urls(driver):
     srcs = []
 #   tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
-    tags = ['iframe', 'script','embed']
+    tags = ['iframe', 'script', 'embed']
     for t in tags:
         elems = driver.find_elements_by_tag_name(t)
         for e in elems:
@@ -116,27 +131,34 @@ def get_src_urls(driver):
 #       print("  ",i)
     return srcs
 
-
 def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
+#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
     chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
+    chrome_options.add_argument("--disable-web-security")
     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--safebrowsing-disable-download-protection")
+    chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
     chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
 #   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
     driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
+    driver.header_overrides = {
+    'Referer': 'com.google.android.gm',
+    }
     resource_urls = []
     try:
         if not checkRedirects(new_url):
             driver.implicitly_wait(page_delay)
             driver.get(new_url)
             html = driver.page_source
-            if len(html) == 0:
+            if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
                 return resource_urls
             script_to_exec = "var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;";
@@ -148,6 +170,7 @@ def process_url(new_url):
                     f.write(driver.page_source)
             resource_urls = find_urls(net_stat)
             resource_urls += get_src_urls(driver)
+            resource_urls += ubdriver.UblockProcessUrl(new_url)
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
@@ -213,7 +236,7 @@ if __name__ == '__main__':
         start_num = (stats_processed // 10) * 10	
     else:	
         start_num = 0
-    #start_num = 80
+#   start_num = 50
 
     try:
         while True:
@@ -234,7 +257,6 @@ if __name__ == '__main__':
 
             print(f"\nUrls recieved from google: {search_urls_count}")
             custlog(f"Urls recieved from google: {search_urls_count}")
-            print(f"Total Urls recieved this session: {session_total}")
 
             new_urls = []
             for i in search_urls:
@@ -244,38 +266,34 @@ if __name__ == '__main__':
 
             print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
+            print(f"Total Urls recieved this session: {session_total}")
 
-            for new_url in new_urls:
+            for search_url in search_urls:
 
-                print("Urls in database for this query:",stats_processed,"\n")
-                custlog(f"Urls in database for this query: {stats_processed}\n")
+                if search_url in new_urls:
 
-                stats_processed += 1
-                safe_url = urllib.parse.quote(new_url, safe='')
-                dbc.add_visited_url(safe_url)
-                dbc.update_query_processed_count(query,stats_processed)
+                    stats_processed += 1
+                    safe_url = urllib.parse.quote(search_url, safe='')
+                    dbc.add_visited_url(safe_url)
+                    dbc.update_query_processed_count(query,stats_processed)
 
-                print(new_url)
-                custlog(f"processing url: {new_url}")
+                    print("\nProcessing new url:", search_url)
+                    custlog(f"processing url: {search_url}")
 
-                resource_urls = process_url(new_url)
-                # print(resource_urls)  # all backend resource urls
+                    resource_urls = process_url(search_url)
+                    # print(resource_urls)  # all backend resource urls
 
-                if matchDomain(new_url, resource_urls):  # formerly: if resource_urls and matchDomain(new_url, resource_urls):
-                    filtered_results += 1
-                    dbc.mark_url(safe_url, 1)
+                    if whitelist_filter(search_url, resource_urls):  # formerly: if resource_urls and whitelist_filter(new_url, resource_urls):
+                        filtered_results += 1
+                        dbc.mark_url(safe_url, 1)
+                        found_success(search_url)
 
-                    print(f"***************** FOUND URL: {new_url}")
-                    custlog(f"FOUND DESIRED URL: {new_url}")
+                    continue
 
-                    with open(output_file, 'a') as of:
-                        of.write(f"{new_url}\n")
-                        of.flush()
-
-                    if filtered_results == desired_count:
-                        print(f"Found desired count of urls: {desired_count}")
-                        custlog(f"Found desired count of urls: {desired_count}")
-                        exit(0)
+#               resource_urls = where_is_it_abubakar(search_url)
+#               if whitelist_filter(search_url, resource_urls):
+#                   filtered_results += 1
+#                   found_success()
 
             if search_urls_count < batch_limit:
                 print("Google results exhausted: Exiting\n")
