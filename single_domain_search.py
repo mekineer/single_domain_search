@@ -127,13 +127,14 @@ def get_src_urls(driver):
 def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
 # #   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument('--headless')
+#    chrome_options.add_argument('--headless')
+    chrome_options.add_extension('ubo_1_30_4_0.crx')
     chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("--enable-javascript")
     chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--disable-extensions")
+#    chrome_options.add_argument("--disable-web-security")
+#    chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--safebrowsing-disable-download-protection")
     chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
