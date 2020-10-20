@@ -3,6 +3,7 @@
 /logs
 /filterlists
 chromedriver
+output.txt
 
 # -----------------------------------------------------------------
 # .gitignore
