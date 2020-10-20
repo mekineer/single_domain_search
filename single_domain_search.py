@@ -334,12 +334,12 @@ if __name__ == '__main__':
                         dbc.mark_url(safe_url, 1)
                         found_success(search_url)
 
-                    continue
+    #           else
 
-#               resource_urls = where_is_it_abubakar(search_url)
-#               if whitelist_filter(search_url, resource_urls):
-#                   filtered_results += 1
-#                   found_success()
+    #               resource_urls = where_is_it_abubakar(search_url)
+    #               if whitelist_filter(search_url, resource_urls):
+    #                   filtered_results += 1
+    #                   found_success()
 
             if search_urls_count < batch_limit:
                 print("Google results exhausted: Exiting\n")
