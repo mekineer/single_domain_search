@@ -12,21 +12,18 @@ import urllib
 import fileinput
 from pathlib import Path
 import warnings
-
-# relating to requirements.txt
 import tldextract
 from googlesearch import search
 from selenium import common
 from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
-import requests
+import requests  # also https://pypi.org/project/selenium-wire/
 from ublock import UblockProcessUrl
-
-# relating to util.py
 from util import *
-ubdriver = UblockProcessUrl()
-logger = get_logger('cdn')
 
+ubdriver = UblockProcessUrl()
+
+logger = get_logger('cdn')
 LOGGER_LINE_NO = 0
 def custlog(line):
     global LOGGER_LINE_NO
@@ -34,11 +31,6 @@ def custlog(line):
     logger.debug(line)
 
 dbc = DBController()
-
-class Stats:
-    processed = 0
-
-stats = Stats()
 
 class D2O:
     def __init__(self, **entries):
@@ -54,6 +46,7 @@ def found_success(new_url):
     if filtered_results == desired_count:
         print(f"Found desired count of urls: {desired_count}")
         custlog(f"Found desired count of urls: {desired_count}")
+        driver.quit()
         exit(0)
 
 
@@ -70,6 +63,30 @@ def whitelist_filter(new_url, resource_urls):
         print('whitelist_filter resource_urls is an empty list')  # Because 404. Even hello world site has one resource.
         return False
     return True
+
+
+def load_browser(new_url):
+    chrome_options = webdriver.ChromeOptions()
+#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument("--ignore-certificate-errors")
+    chrome_options.add_argument("--enable-javascript")
+    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
+    chrome_options.add_argument("--disable-web-security")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--safebrowsing-disable-download-protection")
+    chrome_options.add_argument("--disable-domain-reliability")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
+    driver = webdriver.Chrome(executable_path="./chromedriver",
+                              options=chrome_options)
+    driver.header_overrides = {'Referer': 'com.google.android.gm'}
+    driver.implicitly_wait(page_delay)
+    driver.get(new_url)
+    return(driver)
 
 
 # keeping same domain redirects
@@ -131,32 +148,12 @@ def get_src_urls(driver):
 #       print("  ",i)
     return srcs
 
+
 def process_url(new_url):
-    chrome_options = webdriver.ChromeOptions()
-#   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument("--enable-javascript")
-    chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--disable-extensions")
-    chrome_options.add_argument("--safebrowsing-disable-download-protection")
-    chrome_options.add_argument("--disable-domain-reliability")
-    chrome_options.add_argument("--allow-running-insecure-content")
-    chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
-#   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
-    driver = webdriver.Chrome(executable_path="./chromedriver",
-                              options=chrome_options)
-    driver.header_overrides = {
-    'Referer': 'com.google.android.gm',
-    }
     resource_urls = []
     try:
         if not checkRedirects(new_url):
-            driver.implicitly_wait(page_delay)
-            driver.get(new_url)
+            driver = load_browser(new_url)
             html = driver.page_source
             if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
@@ -177,6 +174,7 @@ def process_url(new_url):
         custlog(f"ERROR {e}")
         print("Processing error",{e},end="\r")
         print("")
+        driver.quit()
     driver.quit()
     return resource_urls
 
@@ -227,20 +225,19 @@ if __name__ == '__main__':
     filtered_results = 0
     session_total = 0    
     dbc.add_query_info(query)
-    stats_processed = dbc.get_processed_count(query)
+    processed_count = dbc.get_processed_count(query)
     query_age = check_staleness(dbc.get_query_date(query))
     #DB testing
     #dbc.get_resource_urls(" ")
     print("\nQuery in database is:",query_age,"days old")
     if query_age == 0:
-        start_num = (stats_processed // 10) * 10	
+        start_num = (processed_count // 10) * 10	
     else:	
         start_num = 0
 #   start_num = 50
 
     try:
         while True:
-            # stop_num = start_num + batch_limit # turns out stop_num should be fixed
             pause = 5*numpy.random.random() + pause_delay
             params_all = {'start': start_num, 'pause': pause, **params_merge}
 
@@ -255,48 +252,48 @@ if __name__ == '__main__':
             search_urls_count = len(search_urls)
             session_total = session_total + search_urls_count
 
-            print(f"\nUrls recieved from google: {search_urls_count}")
-            custlog(f"Urls recieved from google: {search_urls_count}")
-
             new_urls = []
             for i in search_urls:
                 safe_url = urllib.parse.quote(i, safe='')
                 if not dbc.get_visited(safe_url):
                     new_urls.append(i)
 
+            print(f"\nUrls recieved from google: {search_urls_count}")
+            custlog(f"Urls recieved from google: {search_urls_count}")
             print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
-            print(f"Total Urls recieved this session: {session_total}")
+            print(f"Urls recieved this session: {session_total}")
+            print(f"Urls processed for this query: {processed_count}")
 
             for search_url in search_urls:
 
                 if search_url in new_urls:
 
-                    stats_processed += 1
+                    processed_count += 1
                     safe_url = urllib.parse.quote(search_url, safe='')
                     dbc.add_visited_url(safe_url)
-                    dbc.update_query_processed_count(query,stats_processed)
+                    dbc.update_query_processed_count(query,processed_count)
 
                     print("\nProcessing new url:", search_url)
                     custlog(f"processing url: {search_url}")
 
                     resource_urls = process_url(search_url)
-                    # print(resource_urls)  # all backend resource urls
 
                     if whitelist_filter(search_url, resource_urls):  # formerly: if resource_urls and whitelist_filter(new_url, resource_urls):
                         filtered_results += 1
                         dbc.mark_url(safe_url, 1)
                         found_success(search_url)
 
-                    continue
+    #           else
 
-#               resource_urls = where_is_it_abubakar(search_url)
-#               if whitelist_filter(search_url, resource_urls):
-#                   filtered_results += 1
-#                   found_success()
+    #               resource_urls = where_is_it_abubakar(search_url)
+    #               if whitelist_filter(search_url, resource_urls):
+    #                   filtered_results += 1
+    #                   found_success()
 
             if search_urls_count < batch_limit:
                 print("Google results exhausted: Exiting\n")
+                driver.quit()
                 exit(1)
 
             start_num += batch_limit
@@ -304,3 +301,4 @@ if __name__ == '__main__':
     except Exception as e:
         custlog(e)
         print(f"[ERROR] Something went wrong. Please check scdn.log. . . {e} Exiting")
+        driver.quit()
