@@ -12,8 +12,6 @@ import urllib
 import fileinput
 from pathlib import Path
 import warnings
-
-# relating to requirements.txt
 import tldextract
 from googlesearch import search
 from selenium import common
@@ -21,12 +19,11 @@ from seleniumwire import webdriver  # https://stackoverflow.com/questions/156450
 from db_controller import DBController
 import requests
 from ublock import UblockProcessUrl
-
-# relating to util.py
 from util import *
-ubdriver = UblockProcessUrl()
-logger = get_logger('cdn')
 
+ubdriver = UblockProcessUrl()
+
+logger = get_logger('cdn')
 LOGGER_LINE_NO = 0
 def custlog(line):
     global LOGGER_LINE_NO
@@ -34,11 +31,6 @@ def custlog(line):
     logger.debug(line)
 
 dbc = DBController()
-
-class Stats:
-    processed = 0
-
-stats = Stats()
 
 class D2O:
     def __init__(self, **entries):
@@ -134,20 +126,18 @@ def get_src_urls(driver):
 
 def process_url(new_url):
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--load-extension=1.30.2_0")
 # #   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
     chrome_options.add_argument("--ignore-certificate-errors")
-# #   chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--enable-javascript")
     chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
     chrome_options.add_argument("--disable-web-security")
-#     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--safebrowsing-disable-download-protection")
     chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
     chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://host:port")
-#   chrome_options.add_argument('--user-agent=Mozilla/5.0 (Linux; Android 8.1.0; SM-J701F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36')
     chrome_options.add_argument('--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Safari/537.36')
     driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
