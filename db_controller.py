@@ -47,20 +47,40 @@ class DBController:
         logger.debug("creating url table if not exist.")
         sql_visited_urls = """
         CREATE TABLE IF NOT EXISTS visited_urls (
-            url text PRIMARY KEY,
-            begin_date text NOT NULL,
+            id INTEGER NOT NULL PRIMARY KEY,
+            url text ,
+            processed_date text NOT NULL,
             mark INTEGER DEFAULT 0
         );
         """
         self._execute_query(sql_visited_urls)	
         sql_query_Info = """	
         CREATE TABLE IF NOT EXISTS query_Info (	
-            query text PRIMARY KEY,	
+            id INTEGER NOT NULL PRIMARY KEY,
+            query text ,	
             query_date DATE,	
-            processed_count INTEGER DEFAULT 0	
-        );	
+            processed_count INTEGER DEFAULT 0,
+            total_count INTEGER DEFAULT 0
+            );	
         """	
         self._execute_query(sql_query_Info)
+        sql_resource_urls = """	
+        CREATE TABLE IF NOT EXISTS resource_urls (	
+            url_id INTEGER NOT NULL,	
+            resource_url text	
+        );	
+        """	
+        self._execute_query(sql_resource_urls)
+        
+        sql_rank_urls = """	
+        CREATE TABLE IF NOT EXISTS rank_urls (	
+            rank_url_id INTEGER NOT NULL,
+            against_query_id INTEGER NOT NULL,
+            rank INTEGER NOT NULL,
+            rank_date DATE
+            );	
+        """	
+        self._execute_query(sql_rank_urls)
 
     def mark_url(self, url, mark=1):
         logger.debug(f"marking: {mark}, url: {url}")
@@ -80,10 +100,17 @@ class DBController:
             return
         logger.debug(f"inserting in db url: {url}")
         sql = """
-            INSERT INTO visited_urls (url,begin_date)
+            INSERT INTO visited_urls (url,processed_date)
             VALUES(?, ?);
         """
         return self._execute_query(sql, (url, datetime.now())).lastrowid	
+    
+    def get_url_id(self,url):
+        sql = """	
+        SELECT id FROM visited_urls WHERE url=?	
+        """	
+        return self._execute_query(sql, (url,)).fetchone()[0]	
+    
    # ""///////////////////////////////////////new content to db //////////////////////////""	
     	
     def get_searched(self, query):	
@@ -106,7 +133,7 @@ class DBController:
                 """	
             return self._execute_query(sql, (query, datetime.now())).lastrowid	
     	
-    def update_query_count(self, query, count):	
+    def update_query_processed_count(self, query, count):	
         logger.debug(f"storing: {count}, query: {query}")	
         sql = ''' UPDATE query_info	
               SET processed_count = ? 	
@@ -118,7 +145,70 @@ class DBController:
         SELECT processed_count FROM query_info WHERE query=?	
         """	
         return self._execute_query(sql, (query,)).fetchone()[0]	
+    
+    def get_query_id(self,query):
+        sql = """	
+        SELECT id FROM query_info WHERE query=?	
+        """	
+        return self._execute_query(sql, (query,)).fetchone()[0]	
+        
+    
+    
+    # These below two functions are for total_count of urls as marcos said to store and retrive
+    def update_query_total_count(self, query, total_count):	
+        logger.debug(f"storing: {total_count}, query: {query}")	
+        sql = ''' UPDATE query_info	
+              SET total_count = ? 	
+              WHERE query = ?'''	
+        return self._execute_query(sql, (total_count, query))	
     	
+    def get_total_count(self, query):	
+        sql = """	
+        SELECT total_count FROM query_info WHERE query=?	
+        """	
+        return self._execute_query(sql, (query,)).fetchone()[0]	
+    
+    
+    
+    
+    # These below two functions are for resource_urls against particular url to store and retrive	
+    def get_resource_urls(self,url):
+        #url = "http%3A%2F%2Fkrwi.patchricami.it%2Fzpacks-tent.html"
+        url_id = self.get_url_id(url)
+        #print(url_id)
+        sql = """	
+        SELECT resource_url FROM resource_urls WHERE url_id=?	
+         """	
+        #return self._execute_query(sql, (url_id,)).fetchone()[0]	
+        return self._execute_query(sql, (url_id,))
+    
+    def set_resource_url(self,url,resource_url):
+        url_id = self.get_url_id(url)
+        sql = """	
+                INSERT INTO resource_urls (url_id,resource_url)	
+                VALUES(?, ?);	
+                """	
+        return self._execute_query(sql, (url_id, resource_url)).lastrowid	
+    
+    def add_rank_of_url(self,url,query,rank):
+        url_id = self.get_url_id(url)
+        query_id = self.get_url_id(query)
+        sql = """	
+                INSERT INTO rank_urls (rank_url_id,against_query_id,rank,rank_date)	
+                VALUES(?, ?,?,?);	
+                """	
+        return self._execute_query(sql, (url_id, query_id,rank,datetime.now())).lastrowid
+    
+    def get_rank_of_url(self,url,query):
+        url_id = self.get_url_id(url)
+        query_id = self.get_url_id(query)
+        sql = """	
+                 SELECT rank from rank_urls WHERE url_id=? AND query_id=?
+                 """	
+        return self._execute_query(sql, (url_id,query_id,))
+   
+    
+   
     def get_query_date(self, query):	
         sql = """	
         SELECT query_date FROM query_info WHERE query=?	

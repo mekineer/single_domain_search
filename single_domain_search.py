@@ -192,7 +192,7 @@ def check_staleness(last_date):
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
     custlog(f"loading config from path: {CONFIG_PATH}")
-
+    
     with open(CONFIG_PATH, "r") as cf:  
         config_data = D2O(**json.loads(cf.read()))
 
@@ -229,6 +229,8 @@ if __name__ == '__main__':
     dbc.add_query_info(query)
     stats_processed = dbc.get_processed_count(query)
     query_age = check_staleness(dbc.get_query_date(query))
+    #DB testing
+    #dbc.get_resource_urls(" ")
     print("\nQuery in database is:",query_age,"days old")
     if query_age == 0:
         start_num = (stats_processed // 10) * 10	
@@ -273,7 +275,7 @@ if __name__ == '__main__':
                     stats_processed += 1
                     safe_url = urllib.parse.quote(search_url, safe='')
                     dbc.add_visited_url(safe_url)
-                    dbc.update_query_count(query,stats_processed)
+                    dbc.update_query_processed_count(query,stats_processed)
 
                     print("\nProcessing new url:", search_url)
                     custlog(f"processing url: {search_url}")
