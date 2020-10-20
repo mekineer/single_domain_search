@@ -2,6 +2,7 @@
 /venv
 /logs
 /filterlists
+chromedriver
 
 # -----------------------------------------------------------------
 # .gitignore
