@@ -4,6 +4,7 @@
 /filterlists
 chromedriver
 /*.bak
+output.txt
 
 # -----------------------------------------------------------------
 # .gitignore
