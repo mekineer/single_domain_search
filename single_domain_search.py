@@ -15,7 +15,6 @@ import warnings
 import tldextract
 from googlesearch import search
 from selenium import common
-from selenium.webdriver.common.action_chains import ActionChains
 from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
 import requests  # also https://pypi.org/project/selenium-wire/
@@ -92,9 +91,6 @@ def load_browser():
     driver.implicitly_wait(page_delay)
     driver.get(extension_uri)
     ublock_guid = driver.current_window_handle
-#    driver.execute_script('window.open("")')
-#    time.sleep(5)
-#    driver.switch_to.window(driver.window_handles[1])
 
 
 # keeping same domain redirects
@@ -109,7 +105,6 @@ def checkRedirects(new_url):
         print(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"Issue in checkRedirects with url: {new_url}")
         custlog(f"ERROR {e}")
-        driver.quit()
     else:
         if 200 <= response.status_code <= 299:
             if response.history:
@@ -133,6 +128,24 @@ def is_valid(url):  # vikas
     return bool(parsed.netloc) and bool(parsed.scheme)
 
 
+def get_src_urls():
+    srcs = []
+    tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
+#   tags = ['iframe', 'script', 'embed']
+    for t in tags:
+        elems = driver.find_elements_by_tag_name(t)
+        print(f'Number of {t}s: {len(elems)}')
+        for e in elems:
+            if e:
+                s = e.get_attribute("src")
+                if s and s != "" and is_valid(s):
+                    srcs.append(s)
+#   print("")
+#   for i in srcs:
+#       print("  ",i)
+    return srcs
+
+
 def find_urls(net_stat):
     a = []
     print('Number of backend items:',len(net_stat))
@@ -142,40 +155,22 @@ def find_urls(net_stat):
     return a
 
 
-def get_src_urls():
-    srcs = []
-#   tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
-    tags = ['iframe', 'script', 'embed']
-    for t in tags:
-        elems = driver.find_elements_by_tag_name(t)
-        for e in elems:
-            s = e.get_attribute("src")
-            if s and s != "" and is_valid(s):
-                srcs.append(s)
-#   print("")
-#   for i in srcs:
-#       print("  ",i)
-    return srcs
-
-
 def ublock_process_url():
     try:
         driver.switch_to.window(ublock_guid)
-        time.sleep(0.4)
+        time.sleep(0.2)
         driver.find_element_by_css_selector('#loggerExport').click()
-        time.sleep(0.4)
+        time.sleep(0.2)
         data = driver.find_element_by_css_selector("#loggerExportDialog > textarea").get_attribute('value')
-#       ActionChains(driver).click(clear).perform()
-        time.sleep(0.4)
+        time.sleep(0.2)
         driver.find_element_by_css_selector('#modalOverlayClose').click()
-        time.sleep(0.4)
+        time.sleep(0.2)
         driver.find_element_by_css_selector('#clear').click()
-        time.sleep(0.4)
+        time.sleep(0.2)
         driver.switch_to.window(driver.window_handles[1])
-        time.sleep(0.4)
-#        driver.execute_script("window.close()")
+        time.sleep(0.2)
         driver.close()
-        time.sleep(0.4)
+        time.sleep(0.2)
     except Exception as msg:
         print(msg)
         data = ''
@@ -192,13 +187,11 @@ def process_url(new_url):
     try:
         if not checkRedirects(new_url):
             driver.switch_to.window(ublock_guid)
-            clear = driver.find_element_by_id('clear')
-#            try:
-            ActionChains(driver).click(clear).perform()
-#            except:
-#                driver.find_element_by_css_selector('#clear').click()
-            script = 'window.open("{}", "new_window")'.format(new_url)
-            driver.execute_script(script)
+            driver.execute_script('window.open("", "new_window")')
+            for handle in driver.window_handles:
+                if handle != ublock_guid:
+                    driver.switch_to.window(handle)
+                    driver.get(new_url)
             html = driver.page_source
             if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
@@ -210,8 +203,8 @@ def process_url(new_url):
                 url_html_file = urllib.parse.quote(new_url, safe='')
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
-            resource_urls = find_urls(net_stat)
-            resource_urls += get_src_urls()
+            resource_urls = get_src_urls()
+            resource_urls += find_urls(net_stat)
             resource_urls += ublock_process_url()
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
@@ -270,11 +263,13 @@ if __name__ == '__main__':
     filtered_results = 0
     session_total = 0    
     dbc.add_query_info(query)
-    stats_processed = dbc.get_processed_count(query)
+    processed_count = dbc.get_processed_count(query)
+#   DB testing 
+#   dbc.get_resource_urls(" ")
     query_age = check_staleness(dbc.get_query_date(query))
     print("\nQuery in database is:",query_age,"days old")
     if query_age == 0:
-        start_num = (stats_processed // 10) * 10	
+        start_num = (processed_count // 10) * 10	
     else:	
         start_num = 0
 #   start_num = 50
@@ -308,16 +303,16 @@ if __name__ == '__main__':
             print(f"New urls not in database: {len(new_urls)}")
             custlog(f"New urls not in database: {len(new_urls)}")
             print(f"Urls recieved this session: {session_total}")
-            print(f"Urls processed for this query: {stats_processed}")
+            print(f"Urls processed for this query: {processed_count}")
 
             for search_url in search_urls:
 
                 if search_url in new_urls:
 
-                    stats_processed += 1
+                    processed_count += 1
                     safe_url = urllib.parse.quote(search_url, safe='')
                     dbc.add_visited_url(safe_url)
-                    dbc.update_query_count(query,stats_processed)
+                    dbc.update_query_count(query,processed_count)
 
                     print(f"\n{search_url}")
                     custlog(f"processing url: {search_url}")
