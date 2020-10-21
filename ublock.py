@@ -8,10 +8,11 @@ class UblockProcessUrl(object):
     """docstring for UblockProcessUrl"""
     def __init__(self):
         super(UblockProcessUrl, self).__init__()
-        self.display = Display(visible=0, size=(2880, 1800)).start()
+        # self.display = Display(visible=0, size=(2880, 1800)).start()
         chrome_options = webdriver.ChromeOptions()
         # chrome_options.add_argument('--headless')
-        chrome_options.add_argument("--load-extension=1.30.2_0")
+        # chrome_options.add_argument("--load-extension=1.30.2_0")
+        chrome_options.add_extension('./ubo_1_30_4_0.crx')
         self.driver = webdriver.Chrome(executable_path="./chromedriver",options=chrome_options)
         self.driver.maximize_window()
         self.extension_uri = "chrome-extension://cjpalhdlnbpafiamejdnhcphjbkeiagm/logger-ui.html?popup=1#_"
