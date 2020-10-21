@@ -312,7 +312,7 @@ if __name__ == '__main__':
                     processed_count += 1
                     safe_url = urllib.parse.quote(search_url, safe='')
                     dbc.add_visited_url(safe_url)
-                    dbc.update_query_count(query,processed_count)
+                    dbc.update_query_processed_count(query,processed_count)
 
                     print(f"\n{search_url}")
                     custlog(f"processing url: {search_url}")
