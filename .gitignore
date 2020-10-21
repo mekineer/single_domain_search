@@ -3,7 +3,7 @@
 /logs
 /filterlists
 chromedriver
-output.txt
+/*.bak
 
 # -----------------------------------------------------------------
 # .gitignore

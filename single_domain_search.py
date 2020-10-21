@@ -18,10 +18,9 @@ from selenium import common
 from seleniumwire import webdriver  # https://stackoverflow.com/questions/15645093/setting-request-headers-in-selenium
 from db_controller import DBController
 import requests  # also https://pypi.org/project/selenium-wire/
-from ublock import UblockProcessUrl
 from util import *
-
-ubdriver = UblockProcessUrl()
+# from pyvirtualdisplay import Display
+# from xvfbwrapper import Xvfb
 
 logger = get_logger('cdn')
 LOGGER_LINE_NO = 0
@@ -65,17 +64,19 @@ def whitelist_filter(new_url, resource_urls):
     return True
 
 
-def load_browser(new_url):
+def load_browser():
+    global driver
+    global ublock_guid
     chrome_options = webdriver.ChromeOptions()
 #   chrome_options.binary_location = "/applications/developer/google\ chrome.app/Contents/MacOS/Google\ Chrome"
-    chrome_options.add_argument('--headless')
+#   chrome_options.add_argument("--disable-web-security")  # messes up ublock
+#   chrome_options.add_argument('--headless')
+    chrome_options.add_extension('ubo_1_30_4_0.crx')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("--enable-javascript")
     chrome_options.add_argument("--disable-chrome-google-url-tracking-client")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--safebrowsing-disable-download-protection")
     chrome_options.add_argument("--disable-domain-reliability")
     chrome_options.add_argument("--allow-running-insecure-content")
@@ -84,9 +85,12 @@ def load_browser(new_url):
     driver = webdriver.Chrome(executable_path="./chromedriver",
                               options=chrome_options)
     driver.header_overrides = {'Referer': 'com.google.android.gm'}
+#   display = Display(visible=0, backend="xephyr", size=(800, 600))
+#   display.start()
+    extension_uri = "chrome-extension://cjpalhdlnbpafiamejdnhcphjbkeiagm/logger-ui.html?popup=1#_"
     driver.implicitly_wait(page_delay)
-    driver.get(new_url)
-    return(driver)
+    driver.get(extension_uri)
+    ublock_guid = driver.current_window_handle
 
 
 # keeping same domain redirects
@@ -124,6 +128,24 @@ def is_valid(url):  # vikas
     return bool(parsed.netloc) and bool(parsed.scheme)
 
 
+def get_src_urls():
+    srcs = []
+    tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
+#   tags = ['iframe', 'script', 'embed']
+    for t in tags:
+        elems = driver.find_elements_by_tag_name(t)
+        print(f'Number of {t}s: {len(elems)}')
+        for e in elems:
+            if e:
+                s = e.get_attribute("src")
+                if s and s != "" and is_valid(s):
+                    srcs.append(s)
+#   print("")
+#   for i in srcs:
+#       print("  ",i)
+    return srcs
+
+
 def find_urls(net_stat):
     a = []
     print('Number of backend items:',len(net_stat))
@@ -133,27 +155,43 @@ def find_urls(net_stat):
     return a
 
 
-def get_src_urls(driver):
-    srcs = []
-#   tags = ['iframe', 'script']  # https://www.w3schools.com/tags/att_src.asp
-    tags = ['iframe', 'script', 'embed']
-    for t in tags:
-        elems = driver.find_elements_by_tag_name(t)
-        for e in elems:
-            s = e.get_attribute("src")
-            if s and s != "" and is_valid(s):
-                srcs.append(s)
-#   print("")
-#   for i in srcs:
-#       print("  ",i)
-    return srcs
+def ublock_process_url():
+    try:
+        driver.switch_to.window(ublock_guid)
+        time.sleep(0.2)
+        driver.find_element_by_css_selector('#loggerExport').click()
+        time.sleep(0.2)
+        data = driver.find_element_by_css_selector("#loggerExportDialog > textarea").get_attribute('value')
+        time.sleep(0.2)
+        driver.find_element_by_css_selector('#modalOverlayClose').click()
+        time.sleep(0.2)
+        driver.find_element_by_css_selector('#clear').click()
+        time.sleep(0.2)
+        driver.switch_to.window(driver.window_handles[1])
+        time.sleep(0.2)
+        driver.close()
+        time.sleep(0.2)
+    except Exception as msg:
+        print(msg)
+        data = ''
+    data = data.splitlines()
+    urlsy = set()
+    for i in data:
+        if i.startswith("http"):
+            urlsy.add(i.strip())
+    return list(urlsy)
 
 
 def process_url(new_url):
     resource_urls = []
     try:
         if not checkRedirects(new_url):
-            driver = load_browser(new_url)
+            driver.switch_to.window(ublock_guid)
+            driver.execute_script('window.open("", "new_window")')
+            for handle in driver.window_handles:
+                if handle != ublock_guid:
+                    driver.switch_to.window(handle)
+                    driver.get(new_url)
             html = driver.page_source
             if len(html) < 600:
                 print("Empty html, likely browser will not display because \"Not Secure\"")
@@ -165,9 +203,9 @@ def process_url(new_url):
                 url_html_file = urllib.parse.quote(new_url, safe='')
                 with open(f'htmls/{url_html_file}.html', 'w', encoding="utf-8") as f:
                     f.write(driver.page_source)
-            resource_urls = find_urls(net_stat)
-            resource_urls += get_src_urls(driver)
-            resource_urls += ubdriver.UblockProcessUrl(new_url)
+            resource_urls = get_src_urls()
+            resource_urls += find_urls(net_stat)
+            resource_urls += ublock_process_url()
             resource_urls = list(set(resource_urls))
             custlog(f"resource urls: {resource_urls}")
     except common.exceptions.WebDriverException as e:
@@ -175,7 +213,7 @@ def process_url(new_url):
         print("Processing error",{e},end="\r")
         print("")
         driver.quit()
-    driver.quit()
+#   driver.quit()
     return resource_urls
 
 
@@ -190,7 +228,7 @@ def check_staleness(last_date):
 if __name__ == '__main__':
     CONFIG_PATH = os.environ.get("CONF", "param.json")
     custlog(f"loading config from path: {CONFIG_PATH}")
-    
+
     with open(CONFIG_PATH, "r") as cf:  
         config_data = D2O(**json.loads(cf.read()))
 
@@ -226,9 +264,9 @@ if __name__ == '__main__':
     session_total = 0    
     dbc.add_query_info(query)
     processed_count = dbc.get_processed_count(query)
+#   DB testing 
+#   dbc.get_resource_urls(" ")
     query_age = check_staleness(dbc.get_query_date(query))
-    #DB testing
-    #dbc.get_resource_urls(" ")
     print("\nQuery in database is:",query_age,"days old")
     if query_age == 0:
         start_num = (processed_count // 10) * 10	
@@ -238,6 +276,8 @@ if __name__ == '__main__':
 
     try:
         while True:
+            if session_total == 0:
+                load_browser()
             pause = 5*numpy.random.random() + pause_delay
             params_all = {'start': start_num, 'pause': pause, **params_merge}
 
@@ -272,9 +312,9 @@ if __name__ == '__main__':
                     processed_count += 1
                     safe_url = urllib.parse.quote(search_url, safe='')
                     dbc.add_visited_url(safe_url)
-                    dbc.update_query_processed_count(query,processed_count)
+                    dbc.update_query_count(query,processed_count)
 
-                    print("\nProcessing new url:", search_url)
+                    print(f"\n{search_url}")
                     custlog(f"processing url: {search_url}")
 
                     resource_urls = process_url(search_url)
