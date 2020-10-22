@@ -50,7 +50,7 @@ def found_success(new_url):
 
 
 def domain_filter(search_url, resource_urls):
-    host = tldextract.extract(new_url)
+    host = tldextract.extract(search_url)
     for u in resource_urls:
         sub_host = tldextract.extract(u)
         sub_host_format = "{}.{}".format(sub_host.domain, sub_host.suffix)
@@ -74,7 +74,7 @@ def domain_filter(search_url, resource_urls):
 
 # without TLD comparing just domain  # https://raventools.com/marketing-glossary/top-level-domain/
 def whitelist_filter(search_url, resource_urls):
-    host = tldextract.extract(new_url)
+    host = tldextract.extract(search_url)
     for u in resource_urls:
         sub_host = tldextract.extract(u)
         sub_host_format = "{}.{}".format(sub_host.domain, sub_host.suffix)
