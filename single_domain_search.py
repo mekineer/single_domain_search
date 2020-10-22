@@ -49,9 +49,32 @@ def found_success(new_url):
         exit(0)
 
 
+def domain_filter(search_url, resource_urls):
+    host = tldextract.extract(search_url)
+    for u in resource_urls:
+        sub_host = tldextract.extract(u)
+        sub_host_format = "{}.{}".format(sub_host.domain, sub_host.suffix)
+        if whitelist_checkbox:
+            if host.domain != sub_host.domain and sub_host_format not in whitelist_domains:
+                print("Resource domains do not match host")
+                return False
+        if blacklist_checkbox:  # includes checkboxed blacklist, category, or domain_filterlists
+            if sub_host_format in blacklist_domains:
+                print("Host domain contains a blacklisted resource")
+                return False
+        if syntax_filterlist_checkbox:
+            if is_it_marked_abubakar(u):
+                print("Host domain contains a syntax blacklisted resource")
+                return False
+    if len(resource_urls) < 1:
+        print('domain_filter resource_urls is an empty list')  # Because 404. Even hello world site has one resource.
+        return False
+    return True 
+
+
 # without TLD comparing just domain  # https://raventools.com/marketing-glossary/top-level-domain/
-def whitelist_filter(new_url, resource_urls):
-    host = tldextract.extract(new_url)
+def whitelist_filter(search_url, resource_urls):
+    host = tldextract.extract(search_url)
     for u in resource_urls:
         sub_host = tldextract.extract(u)
         sub_host_format = "{}.{}".format(sub_host.domain, sub_host.suffix)
