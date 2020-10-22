@@ -5,7 +5,7 @@ class QueryInfo(models.Model):
 	url = models.CharField(max_length=500,null=True,blank=True)
 	query_date = models.DateTimeField(auto_now_add=True)
 	processed_count = models.IntegerField(default=0)
-	mark = models.IntegerField(default=0)
+	mark = models.BooleanField(default=False)
 
 	class Meta:
 		db_table = 'query_info'

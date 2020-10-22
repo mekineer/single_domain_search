@@ -37,7 +37,12 @@ body {
       <label for="cb2"> Checkbox2 </label><br>
       <input type="checkbox" id="cb3" name="cb3" value="cb3">
       <label for="cb3"> Checkbox3 </label><br><br>
-      <input type="submit" value="Submit">
+      <input type="submit" value="Submit"> <br><br>
+      <div>
+      {% for d in data %}
+      <a href="{{ d.url }}">{{ d.url }} </a> <br><br>
+      {% endfor %}
+    </div>
     </form>
   </center>
   </div>

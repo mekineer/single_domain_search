@@ -6,15 +6,29 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
+
 class QueryInfoViewSet(viewsets.ModelViewSet):
 	serializer_class = QueryInfoSerializer
-	queryset = QueryInfo.objects.all() 
+	# queryset = QueryInfo.objects.all() 
 
-	def list(self, request):
+	def get_queryset(self):
 		query = self.request.query_params.get('query')
-		queryset = QueryInfo.objects.filter(Q(query__icontains=query) & Q(mark = '1'))
-		serializer = QueryInfoSerializer(queryset, many=True)
-		return Response(serializer.data)
+		if query:
+			return QueryInfo.objects.filter(Q(query__icontains=query) & Q(mark = 1))
+			# serializer = QueryInfoSerializer(queryset, many=True)
+			# return Response(serializer.data)
+		return QueryInfo.objects.all()
+
+	def create(self, request, *args, **kwargs):
+		is_many = isinstance(request.data, list)
+		if not is_many:
+			return super(QueryInfoViewSet, self).create(request, *args, **kwargs)
+		else:
+			serializer = self.get_serializer(data=request.data, many=True)
+			serializer.is_valid(raise_exception=True)
+			self.perform_create(serializer)
+			headers = self.get_success_headers(serializer.data)
+			return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 	def destroy(self, request, *args, **kwargs):
 		try:
