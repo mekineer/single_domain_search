@@ -30,12 +30,11 @@
 		<div class="header_input">
       <form action = "{% url 'app:search' %}" method="post"> 
       {% csrf_token %}
-			 <input type="text" name="search">
+			 <input type="text" name="search" value="{{ query }}">
        <button type="submit" class="search_btn" style="border: none ; position: absolute; top: 6px; right: 10px;"><i class="fa fa-search" aria-hidden="true"></i></button>
       </form>
 			<a href="" class="google_mic"><img src="{% static 'images/mic.png' %}"/></a>
 		</div>
-
 		<div class="google_apps">
 			<ul>
 				<li class="google_apps_dots">

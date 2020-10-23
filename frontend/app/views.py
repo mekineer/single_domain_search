@@ -17,7 +17,7 @@ def search(request):
 		# print(res)
 		# print(res)
 		if query:
-			return render(request,'google_sec.html',{'data':res})
+			return render(request,'google_sec.html',{'data':res,'query':query})
 		else:
 			return render(request,'search-eng.html')
 		# return render(request,'app/search.html',{'data':data})
