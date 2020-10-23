@@ -1,0 +1,298 @@
+.google-icon img {
+    width: 100%;
+    max-width: 240px;
+}
+.main_sec {
+    text-align: center;
+    margin: 170px 20px;
+}
+.google_searchicon input {
+    background-color: #fff;
+    border: none;
+    font-size: 16px;
+    height: 100%;
+    outline: none;
+    padding-right: 40px;
+    padding-left: 52px;
+    position: relative;
+    width: 100%;
+    border: 1px solid #eeecec;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 40px;
+}
+.google_searchicon {
+    width: 30%;
+    margin: auto;
+    position: relative;
+}
+.google_searchicon:before {
+    content: "\f002";
+    font-family: 'FontAwesome';
+    position: absolute;
+    z-index: 999;
+    left: 21px;
+    top: 9px;
+    color: #aaa5a5;
+}
+.google_searchicon img {
+    width: 100%;
+    max-width: 15px;
+    position: absolute;
+    right: 18px;
+    top: 9px;
+}
+.google_shortcut_icons ul {
+    display: flex;
+    padding-left: 0;
+}
+.google_shortcut_icons ul li {
+    list-style: none;
+    width: 26%;
+}
+.shorcut_img img {
+    width: 100%;
+    max-width: 23px;
+}
+.google_shortcut_icons {
+    width: 30%;
+    margin: auto;
+    margin-top: 30px;
+}
+.shorcut_main {
+    padding: 10px;
+}
+.shorcut_main:hover {
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    transition-duration: 300ms;
+}
+.shorcut_img {
+    background: #eae8e8;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.shorcut_p p {
+    color: #727070;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+
+/*google_second_page*/
+
+
+
+.logo-sec img {
+    width: 100%;
+    max-width: 140px;
+}
+.google_header {
+    margin: 10px;
+}
+.logo-sec {
+    display: inline-block;
+    padding-right: 40px;
+}
+.header_input {
+    display: inline-block;
+    width: 33%;
+    position: relative;
+}
+.google_apps {
+    float: right;
+}
+.google_apps ul {
+    padding-left: 0;
+}
+.google_apps ul li {
+	list-style: none;
+	display: inline-block;
+	vertical-align: middle;
+}
+.google_apps_dots i {
+    font-size: 28px;
+    margin: 10px;
+    color: #817f7f;
+}
+.email_id_sec {
+    background: #c2185b;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+.email_id_sec span {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header_input input {
+    background-color: #fff;
+    border: none;
+    font-size: 16px;
+    height: 100%;
+    outline: none;
+    padding-right: 40px;
+    padding-left: 52px;
+    position: relative;
+    width: 100%;
+    border: 1px solid #eeecec;
+    padding-top: 6px;
+    padding-bottom: 10px;
+    border-radius: 40px;
+}
+.search_icon i {
+    position: absolute;
+    right: 21px;
+    top: 11px;
+}
+.google_mic img {
+    width: 100%;
+    max-width: 16px;
+    position: absolute;
+    right: 53px;
+    top: 8px;
+}
+.google_navslocal {
+    width: 79%;
+    margin: auto;
+}
+.googletab_cntnt{
+	width: 79%;
+    margin: auto;
+    margin-top: 20px;
+}
+.tabs_heading {
+    color: #000;
+}
+.tabs_heading i {
+    font-size: 15px;
+    padding-right: 6px;
+}
+
+
+
+
+/*responsive*/
+
+
+
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+.main_sec {
+    margin: 90px 10px;
+}
+.google-icon img {
+    max-width: 160px;
+}
+.google_searchicon {
+    width: 100%;
+    margin-top: 17px;
+}
+.google_shortcut_icons {
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+
+/*google-second-page*/
+
+.logo-sec {
+    padding-right: 3px;
+}
+.logo-sec img {
+    max-width: 60px;
+}
+.google_apps_dots i {
+    font-size: 14px;
+    margin: 2px;
+}
+.email_id_sec {
+    width: 20px;
+    height: 20px;
+}
+.email_id_sec span {
+    font-size: 13px;
+}
+.header_input {
+    width: 57%;
+}
+.search_icon i {
+    right: 12px;
+    top: 11px;
+    font-size: 12px;
+}
+.google_mic img {
+    max-width: 12px;
+    right: 30px;
+    top: 9px;
+}
+.google_navslocal {
+    width: 95%;
+}
+.google_navslocal .nav-link {
+    padding: 8px;
+}
+.googletab_cntnt {
+    width: 92%;
+}
+.tabs_heading i {
+    font-size: 12px;
+    padding-right: 0px;
+}
+
+
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) and (max-width: 768px) {
+
+.main_sec {
+    margin: 130px 20px;
+}
+.google_searchicon {
+    width: 60%;
+}
+.google_shortcut_icons {
+    width: 60%;
+}
+
+
+/*google-second-page*/
+
+.header_input {
+    width: 40%;
+}
+
+
+}
+
+
+@media only screen and (max-device-width: 1024px) and (min-device-width: 768px){
+
+
+.main_sec {
+    margin: 110px 20px;
+}
+.google_searchicon {
+    width: 60%;
+}
+.google_shortcut_icons {
+    width: 60%;
+}
+
+
+
+}

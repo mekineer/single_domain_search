@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>google</title>
+
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- style-link -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<!-- bootstrap link -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<!-- font-awesome -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+</head>
+<body>
+
+	<!-- top-sec -->
+
+	<header class="google_header">
+		<div class="container-fluid">
+		<div class="logo-sec">
+			<img src="" alt="Image"/>
+		</div>
+		<div class="header_input">
+      <form action = "{% url 'app:search' %}" method="post"> 
+      {% csrf_token %}
+			 <input type="text" name="search">
+       <button type="submit" class="search_btn" style="border: none ; position: absolute; top: 6px; right: 10px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+      </form>
+			<a href="" class="google_mic"><img src="{% static 'images/mic.png' %}"/></a>
+		</div>
+
+		<div class="google_apps">
+			<ul>
+				<li class="google_apps_dots">
+					<i class="fa fa-bars" aria-hidden="true"></i>
+				</li>
+				<li class="email_id_sec">
+					<span>J</span>
+				</li>
+			</ul>
+		</div>
+		</div>
+	</header>
+
+
+<section class="section_part">
+
+		<div class="tabs_main">
+
+<ul class="nav google_navslocal" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link tabs_heading active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-search" aria-hidden="true"></i> All</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tabs_heading" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-picture-o" aria-hidden="true"></i> Images</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tabs_heading" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false"><i class="fa fa-play-circle" aria-hidden="true"></i> Vedios</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tabs_heading" id="contact-tab" data-toggle="tab" href="#News" role="tab" aria-controls="News" aria-selected="false"> <i class="fa fa-newspaper-o" aria-hidden="true"></i> News</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link tabs_heading" id="contact-tab" data-toggle="tab" href="#Shopping" role="tab" aria-controls="Shopping" aria-selected="false">Shopping</a>
+  </li>
+</ul>
+
+<hr style="width: 100%; height: 1px;margin: 3px 0;">
+
+<div class="tab-content  googletab_cntnt" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+  	
+    {% for d in data %}
+
+      <a href = "{{ d.url }}"> {{ d.url }} </a> <br><br>
+
+    {% endfor %}
+
+
+  </div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+Why do we use it?
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search
+
+  </div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+Where does it come from?
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites
+
+  </div>
+  <div class="tab-pane fade" id="News" role="tabpanel" aria-labelledby="News-tab">
+  	
+Where can I get some?
+There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet
+
+  </div>
+  <div class="tab-pane fade" id="Shopping" role="tabpanel" aria-labelledby="Shopping-tab">
+  	
+"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business
+
+  </div>
+</div>
+
+</div>
+</section>
+
+
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<!-- bootstrap script -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+
+
+</body>
+</html>

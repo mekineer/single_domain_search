@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>google</title>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- style-link -->
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<!-- bootstrap link -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<!-- font-awesome -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+</head>
+<body>
+
+	<section class="main_sec">
+		<div class="google-icon">
+			<img src="" alt="img"/>
+		</div>
+		<div class="google_searchicon">
+		<form action = "{% url 'app:search' %}" method="post"> 
+			{% csrf_token %}
+			<input type="text" placeholder="Search Google or type a URL" name="search">
+		</form>
+			<a href=""><img src="{% static 'images/mic.png' %}"/></a>
+		</div>
+
+		<div class="google_shortcut_icons">
+			<ul>
+				<li>
+					<div class="shorcut_main">
+						<div class="shorcut_img">
+							<img src="{% static 'images/gmail.png' %}"/>
+						</div>
+						<div class="shorcut_p">
+							<p>Inbox</p>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="shorcut_main">
+						<div class="shorcut_img">
+							<img src="{% static 'images/linkedin.png' %}"/>
+						</div>
+						<div class="shorcut_p">
+							<p>Linkedin</p>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="shorcut_main">
+						<div class="shorcut_img">
+							<img src="{% static 'images/skype.png' %}"/>
+						</div>
+						<div class="shorcut_p">
+							<p>Skype</p>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="shorcut_main">
+						<div class="shorcut_img">
+							<img src="{% static 'images/whatsapp.png' %}"/>
+						</div>
+						<div class="shorcut_p">
+							<p>WhatsApp</p>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<!-- bootstrap script -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+</body>
+</html>
